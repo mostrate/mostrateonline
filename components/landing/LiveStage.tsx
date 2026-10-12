@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { contact, hero, templates } from "@/lib/config";
+import { contact, demos, templates } from "@/lib/config";
 import { ArrowRightIcon } from "./Icons";
 
 const ROTATE_MS = 7000;
@@ -155,10 +155,12 @@ export default function LiveStage() {
             <span className="flex-1 truncate rounded bg-bg/60 px-3 py-1 text-center text-[0.72rem] text-muted">
               {`${domain}${src}`}
             </span>
-            <span className="flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-accent">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-              {hero.stage.live}
-            </span>
+            <a
+              href="/biblioteca-templates"
+              className="rounded bg-accent px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_6px_16px_-7px_rgba(79,127,255,0.9)] transition-[background-color,box-shadow,transform] duration-300 hover:bg-[#6690FF] hover:shadow-[0_8px_20px_-7px_rgba(79,127,255,1)] hover:-translate-y-px"
+            >
+              {demos.library}
+            </a>
           </div>
           <ScaledFrame src={src} baseWidth={1440} baseHeight={860} title={`Template ${tpl.name}`} />
         </div>
@@ -173,13 +175,23 @@ export default function LiveStage() {
         </div>
       </div>
 
-      <a
-        href={src}
-        className="group mt-2 inline-flex items-center gap-2 text-[0.8rem] font-semibold text-content transition-colors hover:text-accent"
-      >
-        {hero.stage.open} {tpl.name}
-        <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-      </a>
+      <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <a
+          href={src}
+          className="group inline-flex items-center gap-2 text-[0.8rem] font-semibold text-content transition-colors hover:text-accent"
+        >
+          {demos.openDemo} {tpl.name}
+          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+        </a>
+        <a
+          href="/biblioteca-templates"
+          className="group inline-flex items-center gap-2 text-[0.8rem] font-semibold text-content transition-colors hover:text-accent"
+        >
+          {demos.library}
+          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+
     </div>
   );
 }

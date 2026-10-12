@@ -11,18 +11,16 @@ type Props = {
   size?: "md" | "sm";
   /** Ocupa todo el ancho disponible (planes, formulario, menú mobile). */
   full?: boolean;
-  /** Celda con flecha a la derecha. */
+  /** Ícono de flecha al final de la acción. */
   arrow?: boolean;
   className?: string;
 };
 
 /**
  * Botón de la landing. Anatomía:
- * - Celda cuadrada con flecha diagonal, separada del texto por una línea.
- * - Hover sobrio: el color se aclara apenas, un brillo cruza el botón una sola
- *   vez (solo primario) y la flecha se desliza unos píxeles en su dirección.
- * - Variante outline: el borde se ilumina y las marcas de corte de las
- *   esquinas se abren.
+ * - Cuerpo redondeado y flecha contenida en un círculo para destacar la acción.
+ * - Hover con elevación breve, brillo y movimiento de la flecha.
+ * - Variante outline con el mismo peso visual, borde y halo azul.
  * Todo es CSS (group-hover); con reduced-motion no hay desplazamientos.
  */
 export default function Button({
@@ -37,16 +35,16 @@ export default function Button({
   className = "",
 }: Props) {
   const primary = variant === "primary";
-  const pad = size === "sm" ? "px-4 py-2.5 text-[0.85rem]" : "px-6 py-4 text-[0.92rem]";
-  const cell = size === "sm" ? "w-10" : "w-[3.25rem]";
+  const pad = size === "sm" ? "min-h-10 px-4 text-[0.82rem]" : "min-h-[3.35rem] px-5 text-[0.92rem]";
+  const icon = size === "sm" ? "h-6 w-6" : "h-7 w-7";
   const ease = "ease-[cubic-bezier(0.22,1,0.36,1)]";
 
   const classes = [
-    "group relative isolate inline-flex items-stretch overflow-hidden font-semibold leading-none",
-    `transition-[background-color,border-color,box-shadow] duration-500 ${ease}`,
+    "group relative isolate inline-flex items-center justify-center gap-3 overflow-hidden rounded-full font-semibold leading-none",
+    `transition-[transform,background-color,border-color,box-shadow] duration-500 ${ease} hover:-translate-y-0.5`,
     primary
-      ? "bg-accent text-white hover:bg-[#6690FF] hover:shadow-[0_12px_40px_-14px_rgba(79,127,255,0.75)]"
-      : "border border-line text-content hover:border-content/40 hover:bg-white/[0.03]",
+      ? "bg-accent text-white shadow-[0_12px_30px_-12px_rgba(79,127,255,0.8)] hover:bg-[#6690FF] hover:shadow-[0_18px_38px_-14px_rgba(79,127,255,1)]"
+      : "border border-accent/65 bg-accent/[0.08] text-content shadow-[0_10px_26px_-16px_rgba(79,127,255,0.9)] hover:border-accent hover:bg-accent/[0.18] hover:shadow-[0_16px_34px_-16px_rgba(79,127,255,1)]",
     full ? "flex w-full" : "",
     className,
   ].join(" ");
@@ -61,37 +59,20 @@ export default function Button({
         />
       )}
 
-      {/* Marcas de corte (solo outline) */}
-      {!primary && (
-        <span aria-hidden="true" className="pointer-events-none absolute inset-0">
-          {[
-            "left-0 top-0 border-l border-t",
-            "right-0 top-0 border-r border-t",
-            "bottom-0 left-0 border-b border-l",
-            "bottom-0 right-0 border-b border-r",
-          ].map((pos) => (
-            <span
-              key={pos}
-              className={`absolute h-2 w-2 border-accent transition-all duration-500 ${ease} group-hover:h-3.5 group-hover:w-3.5 ${pos}`}
-            />
-          ))}
-        </span>
-      )}
+      <span className={`relative flex items-center justify-center ${pad}`}>{children}</span>
 
-      <span className={`relative flex flex-1 items-center justify-center ${pad}`}>{children}</span>
-
-      {/* Celda de la flecha */}
+      {/* Ícono de dirección */}
       {arrow && (
         <span
           aria-hidden="true"
-          className={`relative flex flex-shrink-0 items-center justify-center border-l transition-colors duration-500 ${ease} ${cell} ${
+          className={`relative mr-1 flex flex-shrink-0 items-center justify-center rounded-full transition-[background-color,transform] duration-500 ${ease} ${icon} ${
             primary
-              ? "border-white/25 bg-black/10 group-hover:bg-black/15"
-              : "border-line group-hover:border-content/40"
+              ? "bg-white/20 group-hover:translate-x-0.5 group-hover:bg-white/30"
+              : "bg-accent text-white group-hover:translate-x-0.5 group-hover:bg-[#6690FF]"
           }`}
         >
           <ArrowRightIcon
-            className={`h-4 w-4 -rotate-45 transition-transform duration-500 ${ease} group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none`}
+            className={`h-3.5 w-3.5 transition-transform duration-500 ${ease} group-hover:translate-x-0.5 motion-reduce:transition-none`}
           />
         </span>
       )}

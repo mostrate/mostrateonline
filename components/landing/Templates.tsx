@@ -12,8 +12,8 @@ import { ArrowRightIcon } from "./Icons";
 export default function Templates() {
   return (
     <section id="templates" className="border-t border-line">
-      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] py-[clamp(80px,10vw,150px)]">
-        <div className="mb-[clamp(48px,6vw,88px)] flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)]">
+        <div className="mb-[clamp(40px,5vw,64px)] flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeader label={templates.label} title={templates.title} />
           <p className="max-w-[380px] text-[clamp(0.95rem,1.2vw,1.05rem)] leading-[1.7] text-muted lg:text-right">
             {templates.subtitle}
@@ -47,7 +47,7 @@ export default function Templates() {
               </Tilt>
 
               <div className="mt-6 flex items-start gap-5">
-                <span className="font-serif text-[clamp(2.4rem,4vw,3.4rem)] italic leading-[0.8] text-accent">
+                <span className="font-dmsans text-[clamp(2.2rem,3.6vw,3rem)] font-medium italic leading-[0.8] text-accent">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="flex-1">
