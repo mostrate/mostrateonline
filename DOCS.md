@@ -125,9 +125,9 @@ components/
     Nav.tsx                      → nav fija con blur + menú mobile a pantalla completa
     Logo.tsx                     → wordmark "mostrate"
     Icons.tsx                    → íconos de línea SVG inline (sin dependencias)
-    Button.tsx                   → botón único de la landing (flecha circular, halo y hover)
+    Button.tsx                   → botón único de la landing (gradiente, flecha circular y hover)
     Hero.tsx                     → titular, propuesta y CTAs de portada
-    HeroPreview.tsx              → composición animada con previews reales en la portada
+    HeroPreview.tsx              → vidriera animada que alterna previews reales en la portada
     Demos.tsx                    → sección dedicada a las demos en vivo
     LiveStage.tsx                → templates reales en iframes (compu + celular)
     SectionHeader.tsx            → encabezado reutilizable (label + título + sub)
@@ -210,11 +210,12 @@ funcionando dentro de la página). Criterios para no caer en el look genérico
   animada de previews reales en el hero, cards con tilt y sello girando en el
   plan destacado.
 - Sin emojis (íconos de línea en `Icons.tsx`), sin blobs ni gradientes violeta.
-- **Botones** (`Button.tsx`, un solo componente para toda la landing): forma
-  de píldora, flecha dentro de un círculo y halo azul para sostener la llamada
-  a la acción. En hover se elevan levemente, gana presencia el halo y la flecha
-  avanza; el primario además recibe un brillo breve. Se descartó un hover con
-  inversión de color y texto rodando por recargado.
+- **Botones** (`Button.tsx`, un solo componente para toda la landing): bloque
+  compacto con esquinas redondeadas, flecha dentro de un círculo y halo azul
+  para sostener la llamada a la acción. En hover se elevan levemente, gana
+  presencia el halo y la flecha avanza; el primario además usa un gradiente y
+  un brillo breve. Se descartó un hover con inversión de color y texto rodando
+  por recargado.
 
 Una primera iteración clara ("atelier", generada con Stitch) se descartó el mismo
 día por genérica; la paleta oscura original se mantuvo por preferencia.
@@ -257,8 +258,8 @@ Se usa `clamp()` para tamaños fluidos + breakpoints de Tailwind y arbitrarios
 notebook chica, tablet, celu grande, celu chico.
 
 ### Animaciones
-- **Composición del hero**: los previews de escritorio y móvil flotan a ritmos
-  distintos, con un halo azul suave detrás.
+- **Composición del hero**: los previews reales de escritorio y móvil alternan
+  en sincronía, mientras el marco flota con un halo azul suave detrás.
 - **Demos en vivo**: el selector cambia la demo embebida y rota sola cada 7 s
   hasta que el visitante elige un rubro.
 - Todas las animaciones de la landing respetan `prefers-reduced-motion` (ver
@@ -748,6 +749,10 @@ constituyen una integración operativa mientras no se configure el número.
   acceso a ella —más la demo activa— desde todos los tamaños. Se retiró la
   antigua cinta rotativa y se unificó la jerarquía de los CTAs, incluido
   "Hablemos" en el header.
+- **2026-10-12** — La portada pasa de una composición estática a una vidriera
+  sincronizada que alterna tres previews reales en desktop y mobile. El mensaje
+  comercial se reduce a propuesta, bajada y dos CTAs equivalentes; los botones
+  adoptan bloque redondeado, gradiente en el primario y halo de interacción.
 
 ---
 

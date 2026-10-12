@@ -36,7 +36,10 @@
   .animate-hero-float,
   .animate-hero-float-delayed,
   .animate-hero-drift,
-  .animate-hero-glow {
+  .animate-hero-glow,
+  .animate-hero-carousel,
+  .animate-hero-scan,
+  .animate-hero-dot {
     animation: none !important;
   }
 }
