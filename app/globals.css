@@ -8,7 +8,7 @@
   }
 
   body {
-    @apply bg-bg text-content font-inter antialiased;
+    @apply bg-bg text-content font-dmsans antialiased;
     font-size: 16px;
     line-height: 1.6;
   }
@@ -29,14 +29,14 @@
   html {
     scroll-behavior: auto;
   }
-  .animate-underline-in,
   .animate-pulse,
-  .animate-fade-up,
-  .animate-marquee {
+  .animate-fade-up {
     animation: none !important;
   }
-  /* Dejar el subrayado visible sin animación */
-  .underline-animated::after {
-    transform: scaleX(1) !important;
+  .animate-hero-float,
+  .animate-hero-float-delayed,
+  .animate-hero-drift,
+  .animate-hero-glow {
+    animation: none !important;
   }
 }

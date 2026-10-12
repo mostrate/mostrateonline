@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { nav } from "@/lib/config";
 import Logo from "./Logo";
 import Button from "./Button";
@@ -22,19 +23,19 @@ export default function Nav() {
     <>
       <nav className="fixed inset-x-0 top-0 z-[100] border-b border-line bg-bg/75 backdrop-blur-md">
         <div className="mx-auto flex max-w-shell items-center justify-between px-[clamp(20px,4vw,60px)] py-4">
-          <a href="#hero" onClick={close}>
+          <Link href="/#hero" onClick={close}>
             <Logo className="text-[clamp(1.15rem,1.6vw,1.35rem)]" />
-          </a>
+          </Link>
 
           {/* Links desktop */}
-          <ul className="hidden list-none items-center gap-[clamp(20px,2.8vw,40px)] md:flex">
+          <ul className="hidden list-none items-center gap-[clamp(12px,1.5vw,24px)] lg:flex">
             {nav.links.map((link, i) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="group text-[0.9rem] font-medium text-muted transition-colors hover:text-content"
+                  className="group text-[0.92rem] font-medium text-muted transition-colors hover:text-content"
                 >
-                  <span className="mr-1 text-[0.65rem] text-accent/70 transition-colors group-hover:text-accent">
+                  <span className="mr-1 text-[0.7rem] text-accent/70 transition-colors group-hover:text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {link.label}
@@ -43,7 +44,7 @@ export default function Nav() {
             ))}
           </ul>
 
-          <Button href={nav.cta.href} variant="outline" size="sm" className="max-md:!hidden">
+          <Button href={nav.cta.href} size="sm" className="max-lg:!hidden">
             {nav.cta.label}
           </Button>
 
@@ -53,7 +54,7 @@ export default function Nav() {
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="flex h-9 w-9 flex-col items-center justify-center gap-[6px] p-1 md:hidden"
+            className="flex h-9 w-9 flex-col items-center justify-center gap-[6px] p-1 lg:hidden"
           >
             <span
               className={`block h-0.5 w-[22px] bg-content transition-transform duration-300 ${
@@ -72,7 +73,7 @@ export default function Nav() {
       {/* Overlay menú mobile. Va debajo del nav (z-90) para que el logo y el
           botón de cerrar sigan visibles. */}
       <div
-        className={`fixed inset-0 z-[90] flex flex-col justify-center bg-bg px-[clamp(20px,6vw,48px)] transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[90] flex flex-col justify-center bg-bg px-[clamp(20px,6vw,48px)] transition-opacity duration-300 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >

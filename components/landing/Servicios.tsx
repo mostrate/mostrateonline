@@ -5,7 +5,7 @@ import { serviceIcons } from "./Icons";
 export default function Servicios() {
   return (
     <section id="servicios">
-      <div className="mx-auto grid max-w-shell gap-[clamp(40px,6vw,96px)] px-[clamp(20px,4vw,60px)] py-[clamp(80px,10vw,150px)] lg:grid-cols-[5fr_7fr]">
+      <div className="mx-auto grid max-w-shell gap-[clamp(36px,5vw,72px)] px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)] lg:grid-cols-[5fr_7fr]">
         {/* Encabezado fijo mientras se recorre la lista */}
         <SectionHeader
           label={servicios.label}

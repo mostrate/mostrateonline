@@ -37,51 +37,50 @@ export const site = {
 /* ─────────────────────────────  NAV  ───────────────────────────────── */
 export const nav = {
   links: [
-    { label: "Servicios", href: "#servicios" },
-    { label: "Templates", href: "#templates" },
-    { label: "Precios", href: "#precios" },
+    { label: "Servicios", href: "/#servicios" },
+    { label: "Templates", href: "/#templates" },
+    { label: "Cómo trabajamos", href: "/#como-trabajamos" },
+    { label: "Precios", href: "/#precios" },
+    { label: "Preguntas frecuentes", href: "/#faq" },
   ],
-  cta: { label: "Hablemos", href: "#contacto" },
+  cta: { label: "Hablemos", href: "/#contacto" },
 };
 
 /* ─────────────────────────────  HERO  ──────────────────────────────── */
 export const hero = {
-  eyebrow: "Disponible para nuevos proyectos",
-  // El título se arma en 3 partes; "highlight" lleva el subrayado animado.
+  eyebrow: "PÁGINAS WEB PARA NEGOCIOS REALES",
+  // El título se arma en 3 partes; "highlight" toma el color de acento.
   title: {
     before: "Tu negocio merece una ",
     highlight: "presencia digital",
     after: " que lo represente.",
   },
   subtitle:
-    "Creamos landing pages profesionales para emprendedores y pequeños negocios. Rápido, sin vueltas, a un precio accesible.",
+    "Una página clara y propia para que quien llegue entienda tu propuesta y dé el próximo paso.",
   actions: {
     primary: { label: "Ver templates", href: "#templates" },
     secondary: { label: "Contactar", href: "#contacto" },
   },
-  stats: [
-    { num: "A tiempo", label: "Entregas en el plazo pactado" },
-    { num: "100%", label: "Personalizado" },
-    { num: "Sin sorpresas", label: "Precio fijo desde el día uno" },
-  ],
-  // Vidriera en vivo: muestra los templates reales dentro de marcos de dispositivo.
-  stage: {
-    live: "En vivo",
-    open: "Abrir demo",
+  proof: "Diseño, tiempos y precio claros desde el comienzo.",
+  preview: {
+    label: "Tu próxima página",
+    identity: "Diseño a medida",
+    detail: "01 / Tu identidad",
   },
 };
 
-/* ─────────────────────────────  CINTA DE RUBROS  ───────────────────── */
-export const marquee = [
-  "Contadores",
-  "Tiendas",
-  "Restaurantes",
-  "Gimnasios",
-  "Abogados",
-  "Cafés",
-  "Nutricionistas",
-  "Coaches",
-];
+export const demos = {
+  label: "Demos en vivo",
+  title: "Mirá cada diseño en funcionamiento",
+  subtitle:
+    "Explorá los templates en escritorio y celular antes de elegir el punto de partida para tu página.",
+  openDemo: "Abrir demo",
+  library: "Ver todos los templates",
+};
+
+export const library = {
+  backToHome: "Volver al inicio",
+};
 
 /* ─────────────────────────────  SERVICIOS  ─────────────────────────── */
 export const servicios = {
@@ -186,6 +185,34 @@ export const precios = {
       ],
       cta: { label: "Empezar ahora", href: "#contacto", style: "solid" as const },
     },
+  ],
+};
+
+/* ──────────────────────── CÓMO TRABAJAMOS ─────────────────────────── */
+export const comoTrabajamos = {
+  label: "Cómo trabajamos",
+  title: "Un proceso claro, de principio a fin",
+  subtitle:
+    "Avanzamos con pasos simples para que tu página refleje el negocio y llegue a publicarse sin complicaciones.",
+  items: [
+    { number: "01", title: "Nos contás", desc: "Conocemos tu negocio, lo que ofrecés y qué necesitás comunicar." },
+    { number: "02", title: "Lo diseñamos", desc: "Adaptamos el template a tus colores, textos, imágenes e identidad." },
+    { number: "03", title: "Lo revisamos", desc: "Te mostramos la página para ajustar los detalles antes de publicarla." },
+    { number: "04", title: "La publicamos", desc: "Dejamos la web online, lista para que la compartas con tus clientes." },
+  ],
+};
+
+/* ───────────────────────────── FAQ ────────────────────────────────── */
+export const faq = {
+  label: "Preguntas frecuentes",
+  title: "Antes de empezar",
+  subtitle: "Las respuestas a las dudas más comunes sobre el proceso.",
+  items: [
+    { question: "¿Necesito tener un dominio?", answer: "No. Podemos orientarte para registrarlo y dejarlo funcionando junto con tu página." },
+    { question: "¿Qué información necesito preparar?", answer: "Una descripción de tu negocio, servicios o productos, datos de contacto e imágenes. Si algo falta, te ayudamos a ordenarlo." },
+    { question: "¿La página funciona en celular?", answer: "Sí. Cada diseño se adapta para verse y usarse bien en celular, tablet y computadora." },
+    { question: "¿Puedo cambiar textos o fotos después?", answer: "Sí. Los cambios de contenido se incluyen dentro del mantenimiento mensual acordado." },
+    { question: "¿Cuánto demora?", answer: "El plazo depende del alcance y de contar con el contenido necesario. Lo definimos antes de empezar." },
   ],
 };
 

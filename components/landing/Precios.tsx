@@ -17,7 +17,7 @@ function Stamp({ text }: { text: string }) {
         <path id="stamp-orbit" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" />
       </defs>
       <circle cx="50" cy="50" r="48" className="fill-bg" stroke="currentColor" strokeWidth="1" />
-      <text fontSize="9.6" fontWeight="700" fill="currentColor" className="font-inter">
+      <text fontSize="9.6" fontWeight="700" fill="currentColor" className="font-dmsans">
         <textPath href="#stamp-orbit" textLength="226" lengthAdjust="spacing">
           {orbit}
         </textPath>
@@ -30,7 +30,7 @@ function Stamp({ text }: { text: string }) {
 export default function Precios() {
   return (
     <section id="precios" className="border-t border-line">
-      <div className="mx-auto grid max-w-shell gap-[clamp(48px,6vw,96px)] px-[clamp(20px,4vw,60px)] py-[clamp(80px,10vw,150px)] lg:grid-cols-[4fr_8fr]">
+      <div className="mx-auto grid max-w-shell gap-[clamp(40px,5vw,72px)] px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)] lg:grid-cols-[4fr_8fr]">
         <div className="lg:self-start">
           <SectionHeader label={precios.label} title={precios.title} subtitle={precios.subtitle} />
           <p className="mt-8 text-[0.95rem] text-muted">

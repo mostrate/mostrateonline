@@ -5,7 +5,7 @@ emprendedores, pequeños negocios y monotributistas en Argentina.
 
 ## Stack
 
-- [Next.js 14](https://nextjs.org/) (App Router)
+- [Next.js 15](https://nextjs.org/) (App Router)
 - [Tailwind CSS](https://tailwindcss.com/)
 - TypeScript
 - Deploy en [Vercel](https://vercel.com/)
@@ -25,6 +25,7 @@ Abrir [http://localhost:3000](http://localhost:3000).
 app/
   layout.tsx              → fuentes de landing y templates, metadata, estilos globales
   page.tsx                → landing principal de Mostrate
+  biblioteca-templates/   → galería de templates con navegación completa
   globals.css             → base Tailwind + reduced-motion
   templates/              → páginas independientes de templates de clientes
     profesional/
@@ -50,7 +51,7 @@ componentes. Las demos usan `lib/templates/<slug>.ts`; ver
 
 - **Precios:** objeto `pricing` (`inicial` / `mensual`).
 - **Contacto:** objeto `contact` (email, WhatsApp, ubicación).
-- **Secciones:** `hero`, `marquee`, `servicios`, `templates`, `precios`, `contacto`, `footer`.
+- **Secciones:** `hero`, `servicios`, `templates` (demos en vivo), `como-trabajamos`, `precios`, `faq`, `contacto`, `footer`. La galería está en `/biblioteca-templates`.
 
 ## Deploy en Vercel
 
