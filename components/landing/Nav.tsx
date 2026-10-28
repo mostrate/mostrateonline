@@ -28,14 +28,14 @@ export default function Nav() {
           </Link>
 
           {/* Links desktop */}
-          <ul className="hidden list-none items-center gap-[clamp(12px,1.5vw,24px)] lg:flex">
+          <ul className="hidden list-none items-center gap-[clamp(12px,1.5vw,24px)] xl:flex">
             {nav.links.map((link, i) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="group text-[0.92rem] font-medium text-muted transition-colors hover:text-content"
+                  className="group whitespace-nowrap text-[1.05rem] font-medium text-content/70 transition-colors hover:text-content"
                 >
-                  <span className="mr-1 text-[0.7rem] text-accent/70 transition-colors group-hover:text-accent">
+                  <span className="mr-1 text-[0.78rem] text-accent/80 transition-colors group-hover:text-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {link.label}
@@ -44,7 +44,7 @@ export default function Nav() {
             ))}
           </ul>
 
-          <Button href={nav.cta.href} size="sm" className="max-lg:!hidden">
+          <Button href={nav.cta.href} size="sm" className="max-xl:!hidden !text-base">
             {nav.cta.label}
           </Button>
 
@@ -54,7 +54,7 @@ export default function Nav() {
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="flex h-9 w-9 flex-col items-center justify-center gap-[6px] p-1 lg:hidden"
+            className="flex h-9 w-9 flex-col items-center justify-center gap-[6px] p-1 xl:hidden"
           >
             <span
               className={`block h-0.5 w-[22px] bg-content transition-transform duration-300 ${
@@ -73,7 +73,7 @@ export default function Nav() {
       {/* Overlay menú mobile. Va debajo del nav (z-90) para que el logo y el
           botón de cerrar sigan visibles. */}
       <div
-        className={`fixed inset-0 z-[90] flex flex-col justify-center bg-bg px-[clamp(20px,6vw,48px)] transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-[90] flex flex-col justify-center bg-bg px-[clamp(20px,6vw,48px)] transition-opacity duration-300 xl:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >

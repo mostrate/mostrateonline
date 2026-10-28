@@ -7,7 +7,7 @@ export default function Hero() {
     <section id="hero" className="relative min-h-[100svh] pt-16">
       <div className="mx-auto flex min-h-[calc(100svh-4rem)] max-w-shell px-[clamp(20px,4vw,60px)] py-[clamp(24px,4vw,56px)]">
         <div className="grid flex-1 items-center gap-[clamp(36px,5vw,72px)] lg:grid-cols-[.9fr_1.1fr]">
-          <div className="max-w-[600px]">
+          <div className="max-w-[600px] lg:-translate-y-12">
             <p className="mb-6 flex items-center gap-2 text-[0.68rem] font-bold tracking-[0.16em] text-accent">
               <span className="h-px w-7 bg-accent" />
               {hero.eyebrow}

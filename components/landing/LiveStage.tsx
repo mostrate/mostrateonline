@@ -156,7 +156,7 @@ export default function LiveStage() {
             </span>
             <a
               href="/biblioteca-templates"
-              className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-accent px-4 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-[#608CFF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+              className="landing-button landing-button-blue inline-flex min-h-10 shrink-0 items-center justify-center rounded-xl border px-4 py-2 text-center text-xs font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               {demos.library}
             </a>

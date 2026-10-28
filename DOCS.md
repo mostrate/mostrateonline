@@ -125,7 +125,7 @@ components/
     Nav.tsx                      → nav fija con blur + menú mobile a pantalla completa
     Logo.tsx                     → wordmark "mostrate"
     Icons.tsx                    → íconos de línea SVG inline (sin dependencias)
-    Button.tsx                   → botón único de la landing (superficie sólida, texto centrado y foco visible)
+    Button.tsx                   → botón único de la landing (color y profundidad suave, texto centrado y foco visible)
     Hero.tsx                     → titular, propuesta y CTAs de portada
     HeroPreview.tsx              → vidriera animada que alterna previews reales en la portada
     Demos.tsx                    → sección dedicada a las demos en vivo
@@ -210,7 +210,7 @@ funcionando dentro de la página). Criterios para no caer en el look genérico
   animada de previews reales en el hero, cards con tilt y sello girando en el
   plan destacado.
 - Sin emojis (íconos de línea en `Icons.tsx`), sin blobs ni gradientes violeta.
-- **Botones**: superficies sólidas, texto centrado y esquinas suavemente redondeadas. El azul identifica la acción principal y la superficie clara da igual presencia al contacto. Sin flechas decorativas, gradientes, barridos de brillo ni halos. Hover y presión cambian el color; el foco de teclado tiene un contorno visible.
+- **Botones**: cápsulas de doble contorno con tipografía Syne centrada. Azul eléctrico para la acción principal y marfil para contacto, con igual tamaño en portada. El contorno interior se expande hacia afuera en hover y la sombra acompaña la elevación; sin flechas, texturas, degradados ni base de relieve. Se respeta movimiento reducido y se conserva el foco visible (28/10/2026).
 
 Una primera iteración clara ("atelier", generada con Stitch) se descartó el mismo
 día por genérica; la paleta oscura original se mantuvo por preferencia.
@@ -254,7 +254,14 @@ notebook chica, tablet, celu grande, celu chico.
 
 ### Animaciones
 - **Composición del hero**: los previews reales de escritorio y móvil alternan
-  en sincronía, mientras el marco flota con un halo azul suave detrás.
+  en sincronía cada 6 s entre los cuatro rubros. Cada modelo tiene una pestaña
+  en un marco inspirado en Chrome, con barra de direcciones. Elegir una pestaña
+  cambia ambas capturas sin detener la rotación; no hay controles play/pausa.
+  Movimiento reducido desactiva el avance automático y la flotación. Los marcos
+  flotan con una inclinación suave, sin zoom sobre las capturas. El conjunto
+  limita su tamaño según el ancho y la altura de la pantalla, con margen para
+  que el teléfono y la animación entren completos. En escritorio, el texto
+  se desplaza hacia arriba y las pantallas hacia abajo (28/10/2026).
 - **Demos en vivo**: el selector cambia la demo embebida y rota sola cada 7 s
   hasta que el visitante elige un rubro.
 - Todas las animaciones de la landing respetan `prefers-reduced-motion` (ver
@@ -266,7 +273,7 @@ notebook chica, tablet, celu grande, celu chico.
 
 Ensamblada en [`app/page.tsx`](app/page.tsx). Secciones en orden:
 
-1. **Nav** — fija, logo, links numerados a las secciones, CTA "Hablemos", menú mobile a pantalla completa (el nav queda visible encima para poder cerrarlo).
+1. **Nav** — fija, logo, links numerados a las secciones, CTA "Hablemos", menú mobile a pantalla completa (el nav queda visible encima para poder cerrarlo). Links de escritorio de 1.05 rem; por debajo de 1280 px se usa el menú plegable para conservar el espacio con la tipografía ampliada.
 2. **Hero** — ocupa una pantalla: título, propuesta y CTAs a la izquierda;
    previews reales animados de escritorio y móvil a la derecha en escritorio.
 3. **Servicios** — lista numerada con el encabezado fijo al costado.
@@ -293,8 +300,14 @@ inicio; los links compartidos de navegación usan anclas absolutas a `/`.
 - `ThemeProvider` detecta si la demo corre dentro de un iframe y en ese caso
   no monta los controles de demo (tema, tipografía, "Volver a Mostrate").
 - Las capturas de `public/previews/` se generan cargando cada demo en un iframe
-  de 1440×900 y guardándola en WebP. **Hay que regenerarlas si cambia el hero de
-  un template**; no hay script versionado todavía.
+  de 1440×900 para escritorio y 390×844 para móvil, con escala de píxeles 2,
+  esperando fuentes e imágenes visibles y ocultando el indicador de desarrollo.
+  Se guardan en WebP calidad 95: `<slug>.webp` (2880×1800) y
+  `<slug>-mobile.webp` (780×1688). HeroPreview usa imágenes separadas y conserva
+  esas proporciones; nunca recorta la captura desktop para simular un celular.
+  **Hay que regenerarlas si cambia el hero de un template** y actualizar la
+  versión de sus URLs en HeroPreview para invalidar la caché de imágenes.
+  No hay script versionado todavía.
 
 ### 🔧 Config central — `lib/config.ts`
 Centraliza los precios, los datos de contacto y el contenido comercial de la

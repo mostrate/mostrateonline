@@ -62,7 +62,8 @@ export const hero = {
     secondary: { label: "Contarnos tu idea", href: "#contacto" },
   },
   preview: {
-    label: "Diseños en movimiento",
+    label: "Previsualización de los cuatro modelos en computadora y celular",
+    selector: "Elegir modelo de la portada",
     address: "mostrate.com.ar / tu negocio",
   },
 };

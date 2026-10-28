@@ -9,18 +9,18 @@ type Props = {
   className?: string;
 };
 
-/** Acciones de la landing: superficies sólidas y texto centrado. */
+/** Acciones de la landing: color, profundidad suave y texto centrado. */
 export default function Button({
   children, href, type = "button", onClick, variant = "primary",
   size = "md", full = false, className = "",
 }: Props) {
   const classes = [
-    "inline-flex items-center justify-center rounded-lg border text-center font-semibold leading-snug tracking-[0.01em]",
-    "transition-colors duration-200 motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent",
-    size === "sm" ? "min-h-11 px-5 py-2.5 text-sm" : "min-h-14 px-7 py-3.5 text-[0.95rem]",
+    "landing-button inline-flex items-center justify-center border text-center font-syne font-bold leading-snug tracking-[-0.02em]",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent",
+    size === "sm" ? "min-h-11 px-6 py-2.5 text-sm" : "min-h-[60px] px-7 py-4 text-base",
     variant === "primary"
-      ? "border-transparent bg-accent text-white hover:bg-[#608CFF] active:bg-[#416CE0]"
-      : "border-content bg-content text-bg hover:border-white hover:bg-white active:border-[#D8D6D0] active:bg-[#D8D6D0]",
+      ? "landing-button-blue text-white"
+      : "landing-button-light text-bg",
     full ? "w-full" : "",
     className,
   ].join(" ");

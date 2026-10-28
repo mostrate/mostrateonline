@@ -1,102 +1,97 @@
+﻿"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { hero, templates } from "@/lib/config";
 
-const previewItems = templates.items.slice(0, 3);
-const delays = ["0s", "-6s", "-12s"];
-
-/** Vidriera de portada: alterna previews reales sin sumar interacción ni peso de JS. */
 export default function HeroPreview() {
+  const [active, setActive] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(true);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const timer = setInterval(() => setActive((value) => (value + 1) % templates.items.length), 6000);
+    return () => clearInterval(timer);
+  }, [reducedMotion]);
+
   return (
-    <aside
-      className="relative hidden min-h-[440px] lg:block"
-      aria-label="Previsualización de los diseños disponibles en Mostrate"
-    >
-      <div
-        aria-hidden="true"
-        className="absolute left-[12%] top-[4%] h-[68%] w-[68%] rounded-full bg-accent/20 blur-[100px] motion-safe:animate-hero-glow"
-      />
-
-      <div className="relative mx-auto h-[450px] max-w-[600px] xl:h-[510px]">
-        <div className="absolute inset-x-[2%] top-[6%] overflow-hidden rounded-[1.25rem] border border-white/15 bg-surface p-2 shadow-[0_45px_120px_-38px_rgba(0,0,0,0.98)] motion-safe:animate-hero-float">
-          <div className="flex items-center gap-2 border-b border-line px-2 pb-2.5 pt-0.5">
-            <div className="flex gap-1.5" aria-hidden="true">
-              <span className="h-2 w-2 rounded-full bg-[#FF5F57]/80" />
-              <span className="h-2 w-2 rounded-full bg-[#FEBC2E]/80" />
-              <span className="h-2 w-2 rounded-full bg-[#28C840]/80" />
+    <aside className="hero-preview relative hidden min-w-0 lg:block lg:translate-y-4" aria-label={hero.preview.label}>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-[15%] rounded-full bg-accent/15 blur-[90px]" />
+      <div className="hero-preview-stage relative mx-auto">
+        <div className="hero-preview-desktop overflow-hidden rounded-xl border border-white/20 bg-[#202124] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]">
+          <div className="flex items-end gap-0.5 px-2 pt-2" role="group" aria-label={hero.preview.selector}>
+            <div className="mr-2 hidden h-11 shrink-0 items-center gap-1 xl:flex" aria-hidden="true">
+              <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
+              <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
+              <span className="h-2 w-2 rounded-full bg-[#28c840]" />
             </div>
-            <span className="ml-1 flex-1 truncate rounded-full bg-bg px-3 py-1 text-center text-[0.6rem] text-muted">
-              {hero.preview.address}
-            </span>
-            <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_16px_rgba(79,127,255,1)] motion-safe:animate-pulse" />
-          </div>
-
-          <div className="relative aspect-[1.34] overflow-hidden rounded-[0.85rem] bg-bg">
-            {previewItems.map((item, index) => (
-              <div
+            {templates.items.map((item, index) => (
+              <button
                 key={item.slug}
-                aria-hidden="true"
-                className="absolute inset-0 motion-safe:animate-hero-carousel"
-                style={{ animationDelay: delays[index] }}
+                type="button"
+                aria-pressed={active === index}
+                onClick={() => setActive(index)}
+                className={`relative flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-t-xl px-1.5 text-[clamp(0.6rem,0.8vw,0.75rem)] font-medium transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${active === index ? "bg-[#35363a] text-white" : "text-white/60 hover:bg-white/5 hover:text-white"}`}
               >
-                <Image
-                  src={`/previews/${item.slug}.webp`}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1280px) 520px, 43vw"
-                  className="object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-bg/45 via-transparent to-transparent" />
-              </div>
-            ))}
-            <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/60 motion-safe:animate-hero-scan" />
-          </div>
-        </div>
-
-        <div className="absolute -left-[3%] bottom-[11%] z-20 overflow-hidden rounded-xl border border-white/15 bg-bg/90 px-4 py-3 shadow-[0_24px_58px_-24px_rgba(0,0,0,1)] backdrop-blur">
-          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.15em] text-accent">{hero.preview.label}</p>
-          <div className="relative mt-1.5 h-5 min-w-[150px] overflow-hidden">
-            {previewItems.map((item, index) => (
-              <span
-                key={item.slug}
-                aria-hidden="true"
-                className="absolute inset-0 font-syne text-[1.05rem] font-bold leading-5 tracking-[-0.03em] motion-safe:animate-hero-carousel"
-                style={{ animationDelay: delays[index] }}
-              >
+                <span aria-hidden="true" className={`hidden h-2 w-2 shrink-0 rounded-sm xl:block ${active === index ? "bg-accent" : "bg-white/30"}`} />
                 {item.name}
-              </span>
+              </button>
             ))}
           </div>
-        </div>
-
-        <div className="absolute -right-[1%] bottom-[1%] z-20 w-[29%] overflow-hidden rounded-[1.8rem] border-[5px] border-[#090B10] bg-[#090B10] shadow-[0_32px_70px_-26px_rgba(0,0,0,1)] motion-safe:animate-hero-float-delayed">
-          <div className="relative aspect-[0.54] overflow-hidden rounded-[1.4rem] bg-bg">
-            {previewItems.map((item, index) => (
-              <div
+          <div className="flex h-10 items-center gap-3 bg-[#35363a] px-3">
+            <svg aria-hidden="true" viewBox="0 0 52 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-12 shrink-0 text-white/45">
+              <path d="m7 3-5 5 5 5M2 8h12m8-5 5 5-5 5m5-5H15m34-2a5 5 0 1 0 0 5M49 2v4h-4" />
+            </svg>
+            <div className="flex h-7 min-w-0 flex-1 items-center gap-2 rounded-full bg-[#202124] px-3 text-[0.6rem] text-white/65">
+              <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" className="h-3 w-3 shrink-0">
+                <rect x="4" y="7" width="8" height="6" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
+              </svg>
+              <span className="truncate">{hero.preview.address}</span>
+            </div>
+            <svg aria-hidden="true" viewBox="0 0 4 16" fill="currentColor" className="h-4 w-1 text-white/60">
+              <circle cx="2" cy="3" r="1" /><circle cx="2" cy="8" r="1" /><circle cx="2" cy="13" r="1" />
+            </svg>
+          </div>
+          <div className="relative aspect-[1440/900] overflow-hidden bg-white">
+            {templates.items.map((item, index) => (
+              <Image
                 key={item.slug}
+                src={`/previews/${item.slug}.webp?v=20261028`}
+                alt=""
                 aria-hidden="true"
-                className="absolute inset-0 motion-safe:animate-hero-carousel"
-                style={{ animationDelay: delays[index] }}
-              >
-                <Image
-                  src={`/previews/${item.slug}.webp`}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1280px) 175px, 15vw"
-                  className="object-cover object-top"
-                />
-              </div>
+                fill
+                quality={95}
+                sizes="(min-width: 1440px) 640px, 48vw"
+                priority={index === 0}
+                className={`object-contain transition-opacity duration-700 motion-reduce:transition-none ${active === index ? "opacity-100" : "opacity-0"}`}
+              />
             ))}
           </div>
         </div>
-
-        <div aria-hidden="true" className="absolute right-[9%] top-[1%] z-20 flex gap-1.5 rounded-full border border-white/15 bg-bg/80 px-3 py-2 backdrop-blur">
-          {previewItems.map((item, index) => (
-            <span
-              key={item.slug}
-              className="h-1.5 w-1.5 rounded-full bg-accent motion-safe:animate-hero-dot"
-              style={{ animationDelay: delays[index] }}
-            />
-          ))}
+        <div className="hero-preview-phone absolute bottom-2 right-2 w-[26%] overflow-hidden rounded-[1.65rem] border-[5px] border-[#272C38] bg-[#272C38] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] ring-1 ring-white/20">
+          <div className="relative aspect-[390/844] overflow-hidden rounded-[1.3rem] bg-white">
+            {templates.items.map((item, index) => (
+              <Image
+                key={item.slug}
+                src={`/previews/${item.slug}-mobile.webp?v=20261028`}
+                alt=""
+                aria-hidden="true"
+                fill
+                quality={95}
+                sizes="(min-width: 1440px) 185px, 14vw"
+                priority={index === 0}
+                className={`object-contain transition-opacity duration-700 motion-reduce:transition-none ${active === index ? "opacity-100" : "opacity-0"}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </aside>
