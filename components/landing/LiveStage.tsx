@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { contact, demos, templates } from "@/lib/config";
-import { ArrowRightIcon } from "./Icons";
 
 const ROTATE_MS = 7000;
 // Dominio del sitio (derivado del email de contacto) para la barra del browser.
@@ -157,7 +156,7 @@ export default function LiveStage() {
             </span>
             <a
               href="/biblioteca-templates"
-              className="rounded bg-accent px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_6px_16px_-7px_rgba(79,127,255,0.9)] transition-[background-color,box-shadow,transform] duration-300 hover:bg-[#6690FF] hover:shadow-[0_8px_20px_-7px_rgba(79,127,255,1)] hover:-translate-y-px"
+              className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-accent px-4 py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-[#608CFF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               {demos.library}
             </a>
@@ -178,17 +177,15 @@ export default function LiveStage() {
       <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
         <a
           href={src}
-          className="group inline-flex items-center gap-2 text-[0.8rem] font-semibold text-content transition-colors hover:text-accent"
+          className="inline-flex min-h-11 items-center justify-center text-center text-sm font-semibold text-content underline decoration-white/25 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
         >
           {demos.openDemo} {tpl.name}
-          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
         </a>
         <a
           href="/biblioteca-templates"
-          className="group inline-flex items-center gap-2 text-[0.8rem] font-semibold text-content transition-colors hover:text-accent"
+          className="inline-flex min-h-11 items-center justify-center text-center text-sm font-semibold text-content underline decoration-white/25 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
         >
           {demos.library}
-          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
         </a>
       </div>
 

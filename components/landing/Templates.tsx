@@ -3,7 +3,6 @@ import Link from "next/link";
 import { templates } from "@/lib/config";
 import SectionHeader from "./SectionHeader";
 import Tilt from "./Tilt";
-import { ArrowRightIcon } from "./Icons";
 
 /**
  * Galería escalonada de los 4 templates. Las imágenes son capturas reales de
@@ -60,9 +59,8 @@ export default function Templates() {
                     </span>
                   </div>
                   <p className="mt-2 text-[0.95rem] text-muted">{tpl.desc}</p>
-                  <span className="mt-4 inline-flex items-center gap-2 text-[0.85rem] font-semibold text-content transition-colors group-hover:text-accent">
+                  <span className="mt-4 inline-flex min-h-11 items-center justify-center rounded-lg border border-line px-5 py-2.5 text-center text-sm font-semibold text-content transition-colors group-hover:border-content/30 group-hover:bg-white/[0.05]">
                     {templates.cta}
-                    <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
               </div>
