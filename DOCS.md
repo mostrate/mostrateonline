@@ -125,7 +125,7 @@ components/
     Nav.tsx                      → nav fija con blur + menú mobile a pantalla completa
     Logo.tsx                     → wordmark "mostrate"
     Icons.tsx                    → íconos de línea SVG inline (sin dependencias)
-    Button.tsx                   → botón único de la landing (gradiente, flecha circular y hover)
+    Button.tsx                   → botón único de la landing (superficie sólida, texto centrado y foco visible)
     Hero.tsx                     → titular, propuesta y CTAs de portada
     HeroPreview.tsx              → vidriera animada que alterna previews reales en la portada
     Demos.tsx                    → sección dedicada a las demos en vivo
@@ -210,12 +210,7 @@ funcionando dentro de la página). Criterios para no caer en el look genérico
   animada de previews reales en el hero, cards con tilt y sello girando en el
   plan destacado.
 - Sin emojis (íconos de línea en `Icons.tsx`), sin blobs ni gradientes violeta.
-- **Botones** (`Button.tsx`, un solo componente para toda la landing): bloque
-  compacto con esquinas redondeadas, flecha dentro de un círculo y halo azul
-  para sostener la llamada a la acción. En hover se elevan levemente, gana
-  presencia el halo y la flecha avanza; el primario además usa un gradiente y
-  un brillo breve. Se descartó un hover con inversión de color y texto rodando
-  por recargado.
+- **Botones**: superficies sólidas, texto centrado y esquinas suavemente redondeadas. El azul identifica la acción principal y la superficie clara da igual presencia al contacto. Sin flechas decorativas, gradientes, barridos de brillo ni halos. Hover y presión cambian el color; el foco de teclado tiene un contorno visible.
 
 Una primera iteración clara ("atelier", generada con Stitch) se descartó el mismo
 día por genérica; la paleta oscura original se mantuvo por preferencia.

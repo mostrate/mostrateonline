@@ -20,11 +20,11 @@ export default function Hero() {
             <p className="mt-[clamp(20px,2.5vw,30px)] max-w-[470px] text-[clamp(1rem,1.3vw,1.15rem)] leading-[1.7] text-muted">
               {hero.subtitle}
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button href={hero.actions.primary.href} className="min-w-[190px] max-[400px]:w-full">
+            <div className="mt-8 grid max-w-[460px] grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+              <Button href={hero.actions.primary.href} className="w-full">
                 {hero.actions.primary.label}
               </Button>
-              <Button href={hero.actions.secondary.href} variant="outline" className="min-w-[190px] max-[400px]:w-full">
+              <Button href={hero.actions.secondary.href} variant="outline" className="w-full">
                 {hero.actions.secondary.label}
               </Button>
             </div>
