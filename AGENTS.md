@@ -10,6 +10,9 @@ breve al proyecto.
   aplicar los principios comunes de DOCS.md.
 - Preservar la interoperabilidad con Claude Code y las skills de `.claude/skills/`;
   coordinar mediante Git sin duplicar convenciones por proveedor.
+- Para diseñar, modificar o revisar interfaces de sitios de clientes o sus
+  templates, leer y aplicar
+  [`.claude/skills/diseno-ui/SKILL.md`](.claude/skills/diseno-ui/SKILL.md).
 - Actualizar ramas con `git rebase origin/main` (nunca mergear `main` en la
   rama) y publicar con `git push --force-with-lease`; los PR se integran con
   "Rebase and merge". Ver DOCS.md, sección 14.
