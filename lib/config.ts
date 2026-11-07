@@ -38,7 +38,7 @@ export const site = {
 export const nav = {
   links: [
     { label: "Servicios", href: "/#servicios" },
-    { label: "Templates", href: "/#templates" },
+    { label: "Templates", href: "/biblioteca-templates" },
     { label: "Cómo trabajamos", href: "/#como-trabajamos" },
     { label: "Precios", href: "/#precios" },
     { label: "Preguntas frecuentes", href: "/#faq" },
@@ -48,24 +48,23 @@ export const nav = {
 
 /* ─────────────────────────────  HERO  ──────────────────────────────── */
 export const hero = {
-  eyebrow: "PÁGINAS WEB PARA NEGOCIOS REALES",
+  eyebrow: "PÁGINAS WEB HECHAS A TU MEDIDA",
   // El título se arma en 3 partes; "highlight" toma el color de acento.
   title: {
-    before: "Tu negocio merece una ",
-    highlight: "presencia digital",
-    after: " que lo represente.",
+    before: "Hacé que tu negocio sea ",
+    highlight: "fácil de elegir.",
+    after: "",
   },
   subtitle:
-    "Una página clara y propia para que quien llegue entienda tu propuesta y dé el próximo paso.",
+    "Una página clara, propia y lista para que más personas entiendan lo que hacés y quieran contactarte.",
   actions: {
-    primary: { label: "Ver templates", href: "#templates" },
-    secondary: { label: "Contactar", href: "#contacto" },
+    primary: { label: "Explorar diseños", href: "/biblioteca-templates" },
+    secondary: { label: "Contarnos tu idea", href: "#contacto" },
   },
-  proof: "Diseño, tiempos y precio claros desde el comienzo.",
   preview: {
-    label: "Tu próxima página",
-    identity: "Diseño a medida",
-    detail: "01 / Tu identidad",
+    label: "Previsualización de los cuatro modelos en computadora y celular",
+    selector: "Elegir modelo de la portada",
+    address: "mostrate.com.ar / tu negocio",
   },
 };
 

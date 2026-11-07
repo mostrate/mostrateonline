@@ -51,7 +51,7 @@ componentes. Las demos usan `lib/templates/<slug>.ts`; ver
 
 - **Precios:** objeto `pricing` (`inicial` / `mensual`).
 - **Contacto:** objeto `contact` (email, WhatsApp, ubicación).
-- **Secciones:** `hero`, `servicios`, `templates` (demos en vivo), `como-trabajamos`, `precios`, `faq`, `contacto`, `footer`. La galería está en `/biblioteca-templates`.
+- **Secciones:** `hero`, `servicios`, `como-trabajamos`, `precios`, `faq`, `contacto`, `footer`. La galería está en `/biblioteca-templates` y se abre en otra pestaña desde la navegación y el hero.
 
 ## Deploy en Vercel
 

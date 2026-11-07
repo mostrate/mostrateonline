@@ -10,6 +10,8 @@ Toma un **template ya construido** y produce la versión personalizada de un
 
 Respetar `DOCS.md`, secciones 6 y 9 (estado y límites actuales), y los principios
 comunes de arquitectura y colaboración de la sección 14.
+Para diseñar y verificar la interfaz del cliente, aplicar también
+[`diseno-ui`](../diseno-ui/SKILL.md).
 
 > ⚠️ La arquitectura multi-cliente definitiva se confirma con el usuario la
 > primera vez que se corra esta skill (ver "Decisión de arquitectura"). A partir
