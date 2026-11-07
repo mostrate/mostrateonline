@@ -1,6 +1,7 @@
 type Props = {
   children: string;
   href?: string;
+  target?: "_blank";
   type?: "button" | "submit";
   onClick?: () => void;
   variant?: "primary" | "outline";
@@ -11,7 +12,7 @@ type Props = {
 
 /** Acciones de la landing: color, profundidad suave y texto centrado. */
 export default function Button({
-  children, href, type = "button", onClick, variant = "primary",
+  children, href, target, type = "button", onClick, variant = "primary",
   size = "md", full = false, className = "",
 }: Props) {
   const classes = [
@@ -26,7 +27,7 @@ export default function Button({
   ].join(" ");
 
   return href ? (
-    <a href={href} onClick={onClick} className={classes}>{children}</a>
+    <a href={href} target={target} rel={target === "_blank" ? "noopener noreferrer" : undefined} onClick={onClick} className={classes}>{children}</a>
   ) : (
     <button type={type} onClick={onClick} className={classes}>{children}</button>
   );

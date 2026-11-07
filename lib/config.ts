@@ -38,7 +38,7 @@ export const site = {
 export const nav = {
   links: [
     { label: "Servicios", href: "/#servicios" },
-    { label: "Templates", href: "/#templates" },
+    { label: "Templates", href: "/biblioteca-templates" },
     { label: "Cómo trabajamos", href: "/#como-trabajamos" },
     { label: "Precios", href: "/#precios" },
     { label: "Preguntas frecuentes", href: "/#faq" },
@@ -58,7 +58,7 @@ export const hero = {
   subtitle:
     "Una página clara, propia y lista para que más personas entiendan lo que hacés y quieran contactarte.",
   actions: {
-    primary: { label: "Explorar diseños", href: "#templates" },
+    primary: { label: "Explorar diseños", href: "/biblioteca-templates" },
     secondary: { label: "Contarnos tu idea", href: "#contacto" },
   },
   preview: {

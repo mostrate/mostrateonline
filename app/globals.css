@@ -27,8 +27,8 @@
 
 @layer components {
   .hero-preview-stage {
-    width: min(100%, 680px, calc((100svh - 260px) * 1.2));
-    padding: 16px 9% 12% 8px;
+    width: min(100%, 860px, calc((100svh - 200px) * 1.35));
+    padding: 16px 0 8% 8px;
   }
 
   .hero-preview-desktop {
