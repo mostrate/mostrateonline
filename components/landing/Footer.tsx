@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
           <p className="text-[0.9rem] text-muted">{footer.text}</p>
           <ul className="flex list-none flex-wrap gap-x-8 gap-y-3">
-            {nav.links.map((link) => (
+            {nav.links.filter((link) => link.href !== "/biblioteca-templates").map((link) => (
               <li key={link.href}>
                 <a href={link.href} className={linkClass}>
                   {link.label}

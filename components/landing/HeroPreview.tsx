@@ -23,9 +23,9 @@ export default function HeroPreview() {
   }, [reducedMotion]);
 
   return (
-    <aside className="hero-preview relative hidden min-w-0 lg:block lg:translate-y-4" aria-label={hero.preview.label}>
+    <aside className="hero-preview relative hidden min-w-0 lg:block" aria-label={hero.preview.label}>
       <div aria-hidden="true" className="pointer-events-none absolute inset-[15%] rounded-full bg-accent/15 blur-[90px]" />
-      <div className="hero-preview-stage relative mx-auto">
+      <div className="hero-preview-stage relative ml-auto">
         <div className="hero-preview-desktop overflow-hidden rounded-xl border border-white/20 bg-[#202124] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]">
           <div className="flex items-end gap-0.5 px-2 pt-2" role="group" aria-label={hero.preview.selector}>
             <div className="mr-2 hidden h-11 shrink-0 items-center gap-1 xl:flex" aria-hidden="true">
@@ -69,14 +69,14 @@ export default function HeroPreview() {
                 aria-hidden="true"
                 fill
                 quality={95}
-                sizes="(min-width: 1440px) 640px, 48vw"
+                sizes="(min-width: 1440px) 800px, 55vw"
                 priority={index === 0}
                 className={`object-contain transition-opacity duration-700 motion-reduce:transition-none ${active === index ? "opacity-100" : "opacity-0"}`}
               />
             ))}
           </div>
         </div>
-        <div className="hero-preview-phone absolute bottom-2 right-2 w-[26%] overflow-hidden rounded-[1.65rem] border-[5px] border-[#272C38] bg-[#272C38] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] ring-1 ring-white/20">
+        <div className="hero-preview-phone absolute bottom-[7%] right-2 w-[26%] overflow-hidden rounded-[1.65rem] border-[5px] border-[#272C38] bg-[#272C38] shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] ring-1 ring-white/20">
           <div className="relative aspect-[390/844] overflow-hidden rounded-[1.3rem] bg-white">
             {templates.items.map((item, index) => (
               <Image
@@ -86,7 +86,7 @@ export default function HeroPreview() {
                 aria-hidden="true"
                 fill
                 quality={95}
-                sizes="(min-width: 1440px) 185px, 14vw"
+                sizes="(min-width: 1440px) 250px, 16vw"
                 priority={index === 0}
                 className={`object-contain transition-opacity duration-700 motion-reduce:transition-none ${active === index ? "opacity-100" : "opacity-0"}`}
               />

@@ -277,24 +277,19 @@ Ensamblada en [`app/page.tsx`](app/page.tsx). Secciones en orden:
 2. **Hero** — ocupa una pantalla: título, propuesta y CTAs a la izquierda;
    previews reales animados de escritorio y móvil a la derecha en escritorio.
 3. **Servicios** — lista numerada con el encabezado fijo al costado.
-4. **Templates / Demos en vivo** — la demo real de cada template se muestra en
-   un iframe escalado dentro de un marco de compu (desde tablet) y de celular.
-   Un selector de rubro cambia la demo; rota sola cada 7 s hasta que el visitante
-   elige (no rota con reduced-motion). Mientras carga, un boceto gris tapa el
-   iframe y se desvanece: el sitio "se arma". Debajo del escenario hay accesos
-   a la demo activa y a la biblioteca en todos los tamaños; el marco desktop
-   repite el acceso a la biblioteca.
-5. **Cómo trabajamos** — recorrido de cuatro pasos desde el primer contacto hasta la publicación.
-6. **Precios** — 2 planes; los precios salen de `config.ts`.
-7. **FAQ** — preguntas frecuentes con controles nativos `details` / `summary`.
-8. **Contacto** — "¿Arrancamos?" + formulario (abre el mail con los datos precargados) + info.
-9. **Footer** — links y datos de contacto.
+4. **Cómo trabajamos** — recorrido de cuatro pasos desde el primer contacto hasta la publicación.
+5. **Precios** — 2 planes; los precios salen de `config.ts`.
+6. **FAQ** — preguntas frecuentes con controles nativos `details` / `summary`.
+7. **Contacto** — "¿Arrancamos?" + formulario (abre el mail con los datos precargados) + info.
+8. **Footer** — links y datos de contacto.
 
 La biblioteca vive en [`/biblioteca-templates`](app/biblioteca-templates/page.tsx).
 Renderiza la galería `Templates` sin cambios visuales: capturas reales
 (`public/previews/<slug>.webp`) con tilt, cada una enlazada a
 `/templates/<slug>`. Incluye Ambient, Nav, Footer y un enlace de vuelta al
-inicio; los links compartidos de navegación usan anclas absolutas a `/`.
+inicio; los links compartidos de navegación usan anclas absolutas a `/`. Desde
+la landing, solo «Templates» en la navegación y «Explorar diseños» en el hero
+abren la biblioteca, ambos en una pestaña nueva.
 
 ### Demos embebidas y capturas
 - `ThemeProvider` detecta si la demo corre dentro de un iframe y en ese caso
