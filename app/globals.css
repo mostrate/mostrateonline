@@ -39,6 +39,11 @@
     animation: preview-phone-float 8s ease-in-out infinite;
   }
 
+  .hero-preview-paused .hero-preview-desktop,
+  .hero-preview-paused .hero-preview-phone {
+    animation-play-state: paused;
+  }
+
   .landing-button {
     position: relative;
     isolation: isolate;

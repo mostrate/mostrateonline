@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Ambient from "@/components/landing/Ambient";
 import Footer from "@/components/landing/Footer";
 import Nav from "@/components/landing/Nav";
@@ -17,16 +16,7 @@ export default function BibliotecaTemplatesPage() {
       <Ambient />
       <Nav />
       <main className="pt-16">
-        <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] pt-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-[0.85rem] font-semibold text-muted transition-colors hover:text-accent"
-          >
-            <span aria-hidden="true">←</span>
-            {library.backToHome}
-          </Link>
-        </div>
-        <Templates />
+        <Templates backLabel={library.backToHome} />
       </main>
       <Footer />
     </>

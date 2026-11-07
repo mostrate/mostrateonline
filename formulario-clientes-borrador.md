@@ -1,4 +1,4 @@
-﻿# Onboarding breve de clientes
+# Onboarding breve de clientes
 
 Este documento define el formulario privado que se comparte después de contratar una web. No reemplaza el formulario comercial de la landing ni pide decisiones técnicas al cliente.
 

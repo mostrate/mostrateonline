@@ -33,8 +33,8 @@ export default function Nav() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  target={link.href === "/biblioteca-templates" ? "_blank" : undefined}
-                  rel={link.href === "/biblioteca-templates" ? "noopener noreferrer" : undefined}
+                  target={link.newTab ? "_blank" : undefined}
+                  rel={link.newTab ? "noopener noreferrer" : undefined}
                   className="group whitespace-nowrap text-[1.05rem] font-medium text-content/70 transition-colors hover:text-content"
                 >
                   <span className="mr-1 text-[0.78rem] text-accent/80 transition-colors group-hover:text-accent">
@@ -75,6 +75,8 @@ export default function Nav() {
       {/* Overlay menú mobile. Va debajo del nav (z-90) para que el logo y el
           botón de cerrar sigan visibles. */}
       <div
+        inert={!open}
+        aria-hidden={!open}
         className={`fixed inset-0 z-[90] flex flex-col justify-center bg-bg px-[clamp(20px,6vw,48px)] transition-opacity duration-300 xl:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
@@ -84,8 +86,8 @@ export default function Nav() {
             <li key={link.href}>
               <a
                 href={link.href}
-                target={link.href === "/biblioteca-templates" ? "_blank" : undefined}
-                rel={link.href === "/biblioteca-templates" ? "noopener noreferrer" : undefined}
+                target={link.newTab ? "_blank" : undefined}
+                rel={link.newTab ? "noopener noreferrer" : undefined}
                 onClick={close}
                 className="flex items-baseline gap-4 py-3 font-syne text-[clamp(2.6rem,12vw,3.6rem)] font-extrabold leading-none tracking-[-0.04em] text-content transition-colors hover:text-accent"
               >
