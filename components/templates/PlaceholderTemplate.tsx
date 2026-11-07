@@ -38,10 +38,10 @@ export default function PlaceholderTemplate({ name, tag, desc, accent }: Props) 
         </p>
 
         <Link
-          href="/#templates"
+          href="/biblioteca-templates"
           className="rounded-lg border border-line px-6 py-3 text-sm font-medium text-content transition hover:-translate-y-px hover:border-[rgba(240,238,233,0.3)]"
         >
-          ← Volver a Mostrate
+          ← Volver a la biblioteca
         </Link>
       </main>
     </TemplateShell>

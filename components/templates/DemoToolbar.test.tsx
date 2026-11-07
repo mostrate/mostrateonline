@@ -41,6 +41,11 @@ function desktop() {
 describe("DemoToolbar", () => {
   beforeEach(() => replace.mockClear());
 
+  it("vuelve a la biblioteca desde la barra de la demo", () => {
+    render(<DemoToolbar {...props} onPrimary={vi.fn()} onTheme={vi.fn()} onFont={vi.fn()} />);
+    expect(desktop().getByRole("link", { name: "Volver a la biblioteca de diseños" }).getAttribute("href")).toBe("/biblioteca-templates");
+  });
+
   it("cambia de diseño actualizando ?diseno= en la URL", async () => {
     const user = userEvent.setup();
     render(<DemoToolbar {...props} onPrimary={vi.fn()} onTheme={vi.fn()} onFont={vi.fn()} />);

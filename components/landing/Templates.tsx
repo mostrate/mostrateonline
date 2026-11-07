@@ -3,20 +3,19 @@ import Link from "next/link";
 import { templates } from "@/lib/config";
 import SectionHeader from "./SectionHeader";
 import Tilt from "./Tilt";
+import Button from "./Button";
 
 /**
  * Galería escalonada de los 4 templates. Las imágenes son capturas reales de
  * cada demo (public/previews/<slug>.webp, ver DOCS.md §5 para regenerarlas).
  */
-export default function Templates() {
+export default function Templates({ backLabel }: { backLabel: string }) {
   return (
-    <section id="templates" className="border-t border-line">
-      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)]">
-        <div className="mb-[clamp(40px,5vw,64px)] flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionHeader label={templates.label} title={templates.title} />
-          <p className="max-w-[380px] text-[clamp(0.95rem,1.2vw,1.05rem)] leading-[1.7] text-muted lg:text-right">
-            {templates.subtitle}
-          </p>
+    <section id="templates">
+      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] pb-[clamp(64px,8vw,112px)] pt-6">
+        <div className="mb-[clamp(32px,4vw,48px)]">
+          <Button href="/" variant="outline" size="sm" className="mb-7">{backLabel}</Button>
+          <SectionHeader as="h1" label={templates.label} title={templates.title} subtitle={templates.subtitle} />
         </div>
 
         <div className="grid gap-x-[clamp(24px,4vw,64px)] gap-y-[clamp(48px,6vw,80px)] md:grid-cols-2">
@@ -24,7 +23,7 @@ export default function Templates() {
             <Link
               key={tpl.slug}
               href={`/templates/${tpl.slug}`}
-              className={`group block ${i % 2 === 1 ? "md:mt-[clamp(80px,12vw,180px)]" : ""}`}
+              className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               <Tilt>
                 <div className="overflow-hidden rounded-lg border border-line bg-surface shadow-[0_40px_100px_-50px_rgba(0,0,0,0.9)] transition-colors group-hover:border-accent/60">
@@ -51,9 +50,9 @@ export default function Templates() {
                 </span>
                 <div className="flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                    <h3 className="font-syne text-[clamp(1.5rem,2.4vw,2.2rem)] font-extrabold leading-none tracking-[-0.03em]">
+                    <h2 className="font-syne text-[clamp(1.5rem,2.4vw,2.2rem)] font-extrabold leading-none tracking-[-0.03em]">
                       {tpl.name}
-                    </h3>
+                    </h2>
                     <span className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-muted">
                       {tpl.tag}
                     </span>

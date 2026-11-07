@@ -1,58 +1,64 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import { templates } from "@/lib/config";
 import HeroPreview from "./HeroPreview";
 
+function mockMedia(desktop: boolean, reducedMotion = false) {
+  vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+    matches: query.includes("min-width") ? desktop : reducedMotion,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })));
+}
+
 describe("HeroPreview", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.stubGlobal("matchMedia", vi.fn(() => ({
-      matches: false,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    })));
-  });
+  beforeEach(() => { vi.useFakeTimers(); mockMedia(true); });
+  afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
-  afterEach(() => {
-    vi.useRealTimers();
-    vi.unstubAllGlobals();
-  });
-
-  it("recorre los cuatro modelos y vuelve al primero", () => {
+  it("mantiene cada modelo durante doce segundos", () => {
     render(<HeroPreview />);
-    for (const item of templates.items) {
-      expect(screen.getByRole("button", { name: item.name }).getAttribute("aria-pressed")).toBe("true");
-      act(() => vi.advanceTimersByTime(6000));
-    }
-    expect(screen.getByRole("button", { name: templates.items[0].name }).getAttribute("aria-pressed")).toBe("true");
-  });
-
-  it("sincroniza ambas pantallas al elegir una pestaña y continúa la rotación", () => {
-    const { container } = render(<HeroPreview />);
-    fireEvent.click(screen.getByRole("button", { name: "Bienestar" }));
-    expect(screen.getByRole("button", { name: "Bienestar" }).getAttribute("aria-pressed")).toBe("true");
-    const visible = Array.from(container.querySelectorAll("img.opacity-100"));
-    expect(visible).toHaveLength(2);
-    expect(visible[0].getAttribute("src")).toContain("bienestar.webp");
-    expect(visible[1].getAttribute("src")).toContain("bienestar-mobile.webp");
-    act(() => vi.advanceTimersByTime(6000));
+    act(() => vi.advanceTimersByTime(11999));
     expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
-  });
-
-  it("ofrece sólo las cuatro pestañas y sigue avanzando con el cursor sobre el marco", () => {
-    render(<HeroPreview />);
-    expect(screen.getAllByRole("button")).toHaveLength(4);
-    fireEvent.mouseEnter(screen.getByRole("complementary"));
-    act(() => vi.advanceTimersByTime(6000));
+    act(() => vi.advanceTimersByTime(1));
     expect(screen.getByRole("button", { name: "Comercio" }).getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("respeta movimiento reducido y mantiene disponible la selección manual", () => {
-    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+  it("reinicia la espera al seleccionar un modelo, incluso el que ya estaba seleccionado", () => {
+    const { container } = render(<HeroPreview />);
+    act(() => vi.advanceTimersByTime(11000));
+    fireEvent.click(screen.getByRole("button", { name: "Bienestar" }));
+    act(() => vi.advanceTimersByTime(11000));
+    fireEvent.click(screen.getByRole("button", { name: "Bienestar" }));
+    act(() => vi.advanceTimersByTime(11999));
+    expect(screen.getByRole("button", { name: "Bienestar" }).getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelectorAll("img")).toHaveLength(2);
+    expect(Array.from(container.querySelectorAll("img")).every((img) => img.src.includes("bienestar"))).toBe(true);
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("pausa y reanuda el simulador", () => {
     render(<HeroPreview />);
+    fireEvent.click(screen.getByRole("button", { name: "Pausar" }));
     act(() => vi.advanceTimersByTime(24000));
     expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("complementary").className).toContain("hero-preview-paused");
+    fireEvent.click(screen.getByRole("button", { name: "Reanudar" }));
+    act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: "Comercio" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("respeta movimiento reducido y permite elegir manualmente", () => {
+    mockMedia(true, true);
+    render(<HeroPreview />);
+    act(() => vi.advanceTimersByTime(24000));
     fireEvent.click(screen.getByRole("button", { name: "Gastronomía" }));
+    act(() => vi.advanceTimersByTime(24000));
     expect(screen.getByRole("button", { name: "Gastronomía" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("no carga capturas cuando el simulador está oculto en móvil", () => {
+    mockMedia(false);
+    const { container } = render(<HeroPreview />);
+    expect(container.querySelectorAll("img")).toHaveLength(0);
   });
 });
