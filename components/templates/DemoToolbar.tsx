@@ -123,8 +123,7 @@ export default function DemoToolbar(props: Props) {
 
   const label = "text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F0EEE9]/40";
   const divider = <span aria-hidden className="h-8 w-px bg-white/10" />;
-  // Salir del template al landing con recarga completa (no <Link>): se descarta
-  // el estado del demo y el navegador resuelve el ancla al cargar.
+  // Salir de la demo con recarga completa para descartar su estado.
   const cta = (
     // eslint-disable-next-line @next/next/no-html-link-for-pages
     <a
@@ -136,8 +135,7 @@ export default function DemoToolbar(props: Props) {
     </a>
   );
   const back = (
-    // eslint-disable-next-line @next/next/no-html-link-for-pages
-    <a href="/#templates" className="group flex items-center gap-2 rounded-lg px-1.5 py-1 transition-colors hover:bg-white/5" title="Volver a Mostrate">
+    <a href="/biblioteca-templates" className="group flex items-center gap-2 rounded-lg px-1.5 py-1 transition-colors hover:bg-white/5" title="Volver a la biblioteca de diseños" aria-label="Volver a la biblioteca de diseños">
       <span aria-hidden className="text-[#F0EEE9]/60 transition-transform group-hover:-translate-x-0.5">←</span>
       <Wordmark />
     </a>

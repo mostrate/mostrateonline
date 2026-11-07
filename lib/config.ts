@@ -37,11 +37,11 @@ export const site = {
 /* ─────────────────────────────  NAV  ───────────────────────────────── */
 export const nav = {
   links: [
-    { label: "Servicios", href: "/#servicios" },
-    { label: "Templates", href: "/biblioteca-templates" },
-    { label: "Cómo trabajamos", href: "/#como-trabajamos" },
-    { label: "Precios", href: "/#precios" },
-    { label: "Preguntas frecuentes", href: "/#faq" },
+    { label: "Servicios", href: "/#servicios", newTab: false, inFooter: true },
+    { label: "Templates", href: "/biblioteca-templates", newTab: true, inFooter: false },
+    { label: "Cómo trabajamos", href: "/#como-trabajamos", newTab: false, inFooter: true },
+    { label: "Precios", href: "/#precios", newTab: false, inFooter: true },
+    { label: "Preguntas frecuentes", href: "/#faq", newTab: false, inFooter: true },
   ],
   cta: { label: "Hablemos", href: "/#contacto" },
 };
@@ -66,15 +66,6 @@ export const hero = {
     selector: "Elegir modelo de la portada",
     address: "mostrate.com.ar / tu negocio",
   },
-};
-
-export const demos = {
-  label: "Demos en vivo",
-  title: "Mirá cada diseño en funcionamiento",
-  subtitle:
-    "Explorá los templates en escritorio y celular antes de elegir el punto de partida para tu página.",
-  openDemo: "Abrir demo",
-  library: "Ver todos los templates",
 };
 
 export const library = {
