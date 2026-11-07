@@ -593,6 +593,13 @@ generadores ejecutables. Deben respetar las convenciones de este documento.
 |---|---|
 | `nuevo-template` | Scaffold completo de un template nuevo siguiendo el patrón de Profesional. |
 | `nuevo-cliente` | Generar la instancia de un cliente a partir de un template existente. |
+| `diseno-ui` | Diseñar y revisar sitios de clientes y templates según su identidad, accesibilidad y verificación visual. |
+
+La evaluación de los recursos externos y los motivos de adopción están en
+[`docs/evaluacion-recursos-ui.md`](docs/evaluacion-recursos-ui.md). La skill
+es compartida entre Claude Code y Codex; se aplica a sitios de clientes y sus
+templates, y a la landing comercial solo a pedido explícito. No incorpora
+catálogos ni servicios.
 
 ### Subagentes
 

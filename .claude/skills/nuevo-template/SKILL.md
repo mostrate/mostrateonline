@@ -11,6 +11,8 @@ El template **Profesional** es la referencia canónica: contenido en
 `lib/templates/profesional.ts` y, si el template ofrece varios diseños,
 un componente por diseño (`components/templates/<slug>/Diseno<Nombre>.tsx`)
 con la lógica común en `shared.tsx` (ver `DOCS.md`, sección 6).
+Para la dirección visual y su verificación, aplicar también
+[`diseno-ui`](../diseno-ui/SKILL.md).
 
 ## Datos que necesito (preguntar si faltan)
 - **slug**: identificador en kebab-case. Verificar si existe la ruta
