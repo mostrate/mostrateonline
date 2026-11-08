@@ -64,12 +64,7 @@ export const hero = {
   preview: {
     label: "Previsualización de los cuatro modelos en computadora y celular",
     selector: "Elegir modelo de la portada",
-    address: "mostrate.com.ar / tu negocio",
   },
-};
-
-export const library = {
-  backToHome: "Volver al inicio",
 };
 
 /* ─────────────────────────────  SERVICIOS  ─────────────────────────── */
@@ -112,24 +107,28 @@ export const templates = {
     {
       slug: "profesional",
       name: "Profesional",
+      previewAddress: "estudiorivas.com",
       desc: "Ideal para contadores, abogados, consultores.",
       tag: "Servicios profesionales",
     },
     {
       slug: "comercio",
       name: "Comercio",
+      previewAddress: "casabonita.com.ar",
       desc: "Para tiendas, locales, productos físicos.",
       tag: "Comercio local",
     },
     {
       slug: "gastronomia",
       name: "Gastronomía",
+      previewAddress: "cantinasorrento.com.ar",
       desc: "Restaurantes, cafés, deliveries, catering.",
       tag: "Gastronomía",
     },
     {
       slug: "bienestar",
       name: "Bienestar",
+      previewAddress: "nucleotraining.com.ar",
       desc: "Gimnasios, nutricionistas, psicólogos, coaches.",
       tag: "Salud y bienestar",
     },

@@ -30,7 +30,7 @@ export default function Footer() {
       <div className="border-t border-[var(--ink-a10)]">
         <div className="mx-auto flex max-w-6xl items-center justify-center px-5 py-4 sm:px-8">
           <Link href="/biblioteca-templates" className="text-xs text-[var(--ink-a30)] transition-colors hover:text-[var(--accent)]">
-            Sitio de demostración · hecho con Mostrate ↗
+            Sitio de demostración · ver más diseños de Mostrate ↗
           </Link>
         </div>
       </div>
