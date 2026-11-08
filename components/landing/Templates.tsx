@@ -3,18 +3,16 @@ import Link from "next/link";
 import { templates } from "@/lib/config";
 import SectionHeader from "./SectionHeader";
 import Tilt from "./Tilt";
-import Button from "./Button";
 
 /**
- * Galería escalonada de los 4 templates. Las imágenes son capturas reales de
+ * Galería de los 4 templates. Las imágenes son capturas reales de
  * cada demo (public/previews/<slug>.webp, ver DOCS.md §5 para regenerarlas).
  */
-export default function Templates({ backLabel }: { backLabel: string }) {
+export default function Templates() {
   return (
     <section id="templates">
       <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] pb-[clamp(64px,8vw,112px)] pt-6">
         <div className="mb-[clamp(32px,4vw,48px)]">
-          <Button href="/" variant="outline" size="sm" className="mb-7">{backLabel}</Button>
           <SectionHeader as="h1" label={templates.label} title={templates.title} subtitle={templates.subtitle} />
         </div>
 

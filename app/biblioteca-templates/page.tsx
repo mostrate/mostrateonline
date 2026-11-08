@@ -3,7 +3,6 @@ import Ambient from "@/components/landing/Ambient";
 import Footer from "@/components/landing/Footer";
 import Nav from "@/components/landing/Nav";
 import Templates from "@/components/landing/Templates";
-import { library } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Biblioteca de templates | Mostrate",
@@ -16,7 +15,7 @@ export default function BibliotecaTemplatesPage() {
       <Ambient />
       <Nav />
       <main className="pt-16">
-        <Templates backLabel={library.backToHome} />
+        <Templates />
       </main>
       <Footer />
     </>
