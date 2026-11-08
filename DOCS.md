@@ -234,9 +234,9 @@ usa esquinas rectas o `rounded-lg` en los marcos.
 Cargadas en [`app/layout.tsx`](app/layout.tsx) y expuestas como variables CSS.
 La landing usa:
 
-- **Syne** 800 (`font-syne`) → titulares, logo, números. Es muy ancha: los
-  tamaños gigantes (hero, "¿Arrancamos?", wordmark del footer) están calculados
-  en `vw` para que entren; revisarlos si cambia el copy.
+- **Syne** 800 (`font-syne`) → titulares, logo y números. Es muy ancha: el
+  tamaño del hero es fluido y debe revisarse si cambia el copy. El título de
+  contacto comparte la escala y jerarquía de los demás títulos de sección.
 - **DM Sans** (`font-dmsans`) → texto, interfaz y acentos itálicos. Es la
   fuente base del `body`.
 
@@ -251,9 +251,13 @@ notebook chica, tablet, celu grande, celu chico.
 
 ### Animaciones
 - **Composición del hero**: las capturas de escritorio y teléfono alternan en
-  sincronía cada 12 s. Elegir una pestaña reinicia la espera; el control de
-  pausa detiene la rotación y la flotación. Movimiento reducido desactiva ambas.
-  El simulador aparece desde `lg` y carga solo el par de capturas activo.
+  sincronía cada 12 s. Elegir una pestaña detiene la rotación y la flotación;
+  movimiento reducido desactiva ambas. La barra muestra una dirección de
+  ejemplo correspondiente al negocio de la captura visible.
+  El simulador aparece desde `lg`; el HTML inicial permite cargar las primeras
+  capturas en escritorio sin esperar a la hidratación y evita descargarlas en
+  móvil. Las siguientes se solicitan al elegirlas o al avanzar y se muestran
+  con fundido cuando terminaron de cargar ambas versiones.
 - Todas las animaciones de la landing respetan `prefers-reduced-motion` (ver
   `globals.css`).
 
@@ -276,8 +280,8 @@ Ensamblada en [`app/page.tsx`](app/page.tsx). Secciones en orden:
 La biblioteca vive en [`/biblioteca-templates`](app/biblioteca-templates/page.tsx).
 Renderiza la galería `Templates`: capturas reales
 (`public/previews/<slug>.webp`) con tilt, cada una enlazada a
-`/templates/<slug>`. Incluye Ambient, Nav, Footer y un enlace de vuelta al
-inicio; los links compartidos de navegación usan anclas absolutas a `/`. Desde
+`/templates/<slug>`. Incluye Ambient, Nav y Footer; el logo de navegación lleva
+al inicio y los demás enlaces usan anclas absolutas a `/`. Desde
 la landing, solo «Templates» en la navegación y «Explorar diseños» en el hero
 abren la biblioteca, ambos en una pestaña nueva.
 
@@ -301,7 +305,7 @@ o cerrar el menú y el asunto/cuerpo del correo de contacto. Bloques principales
 
 - `pricing` → **precios** (`inicial`, `mensual`). *Editá esto para cambiar los precios.*
 - `contact` → email, WhatsApp, ubicación.
-- `site`, `nav`, `hero`, `library`, `servicios`, `templates`, `precios`, `contacto`, `footer`.
+- `site`, `nav`, `hero`, `servicios`, `templates`, `precios`, `contacto`, `footer`.
 
 ---
 

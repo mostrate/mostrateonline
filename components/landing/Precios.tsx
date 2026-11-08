@@ -30,7 +30,7 @@ function Stamp({ text }: { text: string }) {
 export default function Precios() {
   return (
     <section id="precios" className="border-t border-line">
-      <div className="mx-auto grid max-w-shell gap-[clamp(40px,5vw,72px)] px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)] lg:grid-cols-[4fr_8fr]">
+      <div className="mx-auto grid max-w-shell gap-[clamp(40px,5vw,72px)] px-[clamp(20px,4vw,60px)] pt-[clamp(64px,8vw,112px)] pb-[clamp(28px,3.5vw,44px)] lg:grid-cols-[4fr_8fr]">
         <div className="lg:self-start">
           <SectionHeader label={precios.label} title={precios.title} subtitle={precios.subtitle} />
           <p className="mt-8 text-[0.95rem] text-muted">

@@ -4,7 +4,7 @@ import SectionHeader from "./SectionHeader";
 export default function ComoTrabajamos() {
   return (
     <section id="como-trabajamos" className="border-t border-line">
-      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)]">
+      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] pt-[clamp(64px,8vw,112px)] pb-[clamp(28px,3.5vw,44px)]">
         <SectionHeader
           label={comoTrabajamos.label}
           title={comoTrabajamos.title}

@@ -33,7 +33,7 @@ export default function Footer() {
             href="/biblioteca-templates"
             className="text-xs text-[var(--ink-a30)] transition-colors hover:text-[var(--accent)]"
           >
-            Sitio de demostración · hecho con Mostrate ↗
+            Sitio de demostración · ver más diseños de Mostrate ↗
           </Link>
         </div>
       </div>

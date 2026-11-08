@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { contacto, contact } from "@/lib/config";
-import { labelClass } from "./SectionHeader";
+import SectionHeader from "./SectionHeader";
 import { ChevronDownIcon } from "./Icons";
 import Button from "./Button";
 
@@ -41,16 +41,8 @@ export default function Contacto() {
 
   return (
     <section id="contacto" className="overflow-hidden border-t border-line">
-      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)]">
-        <span className={`${labelClass} mb-6`}>
-          <span className="h-px w-6 bg-accent" />
-          {contacto.label}
-        </span>
-        {/* Cierre: título gigante a todo el ancho */}
-        <h2 className="font-syne text-[clamp(2.2rem,6.5vw,7rem)] font-extrabold leading-[0.9] tracking-[-0.05em]">
-          {contacto.title.slice(0, -1)}
-          <span className="font-dmsans font-medium italic text-accent">{contacto.title.slice(-1)}</span>
-        </h2>
+      <div className="mx-auto max-w-shell px-[clamp(20px,4vw,60px)] pt-[clamp(64px,8vw,112px)] pb-[clamp(28px,3.5vw,44px)]">
+        <SectionHeader label={contacto.label} title={contacto.title} />
 
         <div className="mt-[clamp(36px,5vw,64px)] grid gap-[clamp(40px,5vw,72px)] border-t border-line pt-[clamp(32px,4vw,48px)] md:grid-cols-[5fr_7fr]">
           {/* Info */}
