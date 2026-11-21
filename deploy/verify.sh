@@ -4,7 +4,7 @@
 #
 #   deploy/verify.sh <url-base> <produccion|staging>
 #
-# Staging necesita STAGING_PASSWORD (y STAGING_USER si se usa) en el entorno.
+# Staging necesita STAGING_PASSWORD en el entorno.
 set -euo pipefail
 
 base="${1%/}"
@@ -15,7 +15,7 @@ fail=0
 auth=()
 if [ "$destino" = "staging" ]; then
   : "${STAGING_PASSWORD:?Falta STAGING_PASSWORD}"
-  auth=(-u "${STAGING_USER:-mostrate}:${STAGING_PASSWORD}")
+  auth=(-u "mostrate:${STAGING_PASSWORD}")
 fi
 
 code() { curl -s -o /dev/null -w "%{http_code}" "$@" || true; }

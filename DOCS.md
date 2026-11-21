@@ -624,6 +624,8 @@ con un merge.
 2. *Use workflow from*: dejar **`main`** (siempre).
 3. *destino*: `staging` o `produccion`.
 4. *rama*: la rama a publicar. Producción solo acepta `main`.
+5. *password*: la contraseña de staging para ese deploy. Es obligatoria con
+   destino `staging`; con `produccion` se ignora.
 
 La Action hace, en orden:
 
@@ -647,7 +649,6 @@ Se puede correr a mano contra un `next start` local:
 `STAGING_PASSWORD=… bash deploy/verify.sh http://localhost:3000 staging`.
 
 El resumen del run muestra el dominio, la URL del deploy y el commit publicado.
-La Action la puede correr cualquiera con permiso de escritura en el repo.
 
 **Volver atrás:** en vercel.com → proyecto (`mostrateonline` o
 `mostrateonline-staging`) → Deployments, elegir el deploy anterior → **Instant
@@ -659,9 +660,9 @@ El código del sitio no tiene contraseña. Al publicar en staging, la Action le
 agrega dos archivos de `deploy/`:
 
 - [`staging-middleware.ts`](deploy/staging-middleware.ts), copiado como
-  `middleware.ts`: pide usuario y contraseña (Basic Auth) y manda
-  `X-Robots-Tag: noindex`. Si la contraseña no llega, responde 503 y no sirve
-  nada.
+  `middleware.ts`: pide la contraseña con Basic Auth (el usuario puede ser
+  cualquiera) y manda `X-Robots-Tag: noindex`. Si la contraseña no llega,
+  responde 503 y no sirve nada.
 - [`staging-next-config.mjs`](deploy/staging-next-config.mjs), copiado como
   `next.config.mjs`: envuelve el de la rama (renombrado a `next.config.base.mjs`)
   y desactiva la optimización de imágenes. Hace falta porque `/_next/image` pide
@@ -672,19 +673,16 @@ agrega dos archivos de `deploy/`:
 Así cualquier rama sale protegida, aunque sea vieja, y producción no carga
 middleware y sigue optimizando imágenes.
 
-Las credenciales viven en GitHub (Settings → Secrets and variables → Actions) y
-la Action se las pasa al deploy:
+La contraseña se escribe en el campo *password* cada vez que se publica en
+staging, y vale para ese deploy. Para cambiarla, se vuelve a publicar con otra.
+Sin contraseña, la Action no publica en staging. No se guarda en GitHub ni en
+las env vars del proyecto de Vercel: la Action se la pasa al deploy (`--env` y
+`--build-env`) y la usa para probar el acceso.
 
-| Dónde | Nombre | Qué es |
-|---|---|---|
-| Secret | `STAGING_PASSWORD` | La contraseña. Sin ella, la Action **no publica** en staging |
-| Variable | `STAGING_USER` | Opcional. Vacía = acepta cualquier usuario con la contraseña correcta |
-
-Viven en GitHub y no en Vercel porque la Action necesita la contraseña para
-probar el acceso, y Vercel no deja leer las variables "sensitive". Para
-cargarla o cambiarla:
-`gh secret set STAGING_PASSWORD -R mostrate/mostrateonline`, y volver a correr
-la Action con destino `staging`. El cambio no aplica hasta el próximo deploy.
+El repo es público y GitHub no trata los inputs como secretos. Por eso el
+primer paso la lee del evento, sin pasarla por una variable que se imprimiría
+en el log, y la enmascara con `::add-mask::`. Desde ahí aparece como `***` en
+los logs. Aun así, conviene usar una contraseña exclusiva para staging.
 
 Vercel tiene su propia protección con contraseña, pero es un add-on pago de Pro.
 Por eso se usa Basic Auth, el mismo esquema que el staging de los sitios de
@@ -703,7 +701,7 @@ La Action frena en dos casos:
 | Proyecto de Vercel | `mostrateonline` | `mostrateonline-staging` |
 | ID | `prj_LAAWVEfOZXPhgBqReajKXMOge6kZ` | `prj_ZzzosmEoWzFvPhd4RoiX8qfALFjN` |
 | Dominio | `mostrateonline.com.ar` | `staging.mostrateonline.com.ar` |
-| Env vars en Vercel | Ninguna | Ninguna (la contraseña llega desde GitHub en cada deploy) |
+| Env vars en Vercel | Ninguna | Ninguna (la contraseña llega con cada deploy) |
 | Vercel Authentication | Desactivada | Desactivada |
 
 - **Cuenta de Vercel:** Hobby personal de `internal@mostrateonline.com.ar`, scope
@@ -719,7 +717,7 @@ La Action frena en dos casos:
   que usa mostrate-kit). Se rota creando uno nuevo en Vercel y cargándolo con
   `gh secret set VERCEL_TOKEN -R mostrate/mostrateonline`.
 - **GitHub, variables:** `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_PRODUCCION`,
-  `VERCEL_PROJECT_ID_STAGING` y, si se usa, `STAGING_USER`.
+  `VERCEL_PROJECT_ID_STAGING`.
 - **Redirecciones:**
   - `www.mostrateonline.com.ar` → 308 al dominio principal (lo hace Vercel).
   - `mostrateonline.com` y su `www` → 301 a `mostrateonline.com.ar` (lo hace
@@ -799,9 +797,9 @@ constituyen una integración operativa mientras no se configure el número.
   demo "Cantina Sorrento"): menú por categorías con toggle de precios,
   sección "Nosotros" minimalista, y sección de ubicación/retiro/delivery.
 - **2026-08-30** — Repo pasado a público y protección de rama activada sobre
-  `main` (ruleset de GitHub: PR + revisión de code owner obligatoria para
-  todos, con bypass solo de "esperar aprobación" para el rol admin — nadie
-  puede pushear directo, ni siquiera el admin). Agregado `.github/CODEOWNERS`.
+  `main` (ruleset de GitHub: PR + revisión de code owner obligatoria, sin
+  excepciones: las mismas reglas para todos, nadie pushea directo). Agregado
+  `.github/CODEOWNERS`.
   Fix en `Precios.tsx`: `leading-none` reemplazado por `leading-[1.15]` en el
   precio (se veía apretado al envolver a 2 líneas con textos largos como "A
   consultar"), y las cards de plan ahora se estiran a la misma altura
