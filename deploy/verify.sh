@@ -55,11 +55,15 @@ if [ "$destino" = "staging" ]; then
   expect 401 "/templates/comercio sin contraseña" "$base/templates/comercio"
   expect 401 "/ con contraseña incorrecta" -u "x:no-es-la-contraseña" "$base/"
   [ -n "${img:-}" ] && expect 401 "imagen sin contraseña" "$img_url"
-  if curl -sI "${auth[@]}" "$base/" | grep -qi '^x-robots-tag: noindex'; then
-    echo "ok   noindex"
-  else
-    echo "FAIL falta X-Robots-Tag: noindex"; fail=1
-  fi
+  # El valor exacto es el nuestro: Vercel agrega "noindex" solo en las URLs *.vercel.app,
+  # y eso no puede hacer pasar el chequeo.
+  for r in / /biblioteca-templates; do
+    if curl -sI "${auth[@]}" "$base$r" | grep -qi '^x-robots-tag: noindex, nofollow'; then
+      echo "ok   noindex  $r"
+    else
+      echo "FAIL falta X-Robots-Tag: noindex, nofollow en $r"; fail=1
+    fi
+  done
 fi
 
 exit "$fail"
