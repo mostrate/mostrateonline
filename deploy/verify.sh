@@ -50,6 +50,19 @@ else
   esac
 fi
 
+# La vista previa del hero (portada): las capturas van en un <source srcset> que el
+# navegador elige en escritorio. Tiene que tener una URL real y llegar como imagen.
+hero=$(curl -s "${auth[@]}" "$base/" | grep -oE '<source[^>]* [sS]rc[sS]et="[^"]+"' | head -1 | sed -E 's/.* [sS]rc[sS]et="([^" ]+).*/\1/; s/&amp;/\&/g' || true)
+case "$hero" in
+  /*)
+    type=$(curl -s -o /dev/null -w "%{http_code} %{content_type}" "${auth[@]}" "$base$hero" || true)
+    case "$type" in
+      "200 image/"*) echo "ok   $type  hero $hero" ;;
+      *) echo "FAIL $type  hero $hero (esperaba 200 image/*)"; fail=1 ;;
+    esac ;;
+  *) echo "FAIL la vista previa del hero no tiene imagen (<source srcset> vacío)"; fail=1 ;;
+esac
+
 if [ "$destino" = "staging" ]; then
   expect 401 "/ sin contraseña" "$base/"
   expect 401 "/templates/comercio sin contraseña" "$base/templates/comercio"

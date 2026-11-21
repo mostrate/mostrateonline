@@ -35,7 +35,8 @@ function PreviewImage({ slug, mobile, visible, onLoad, onError }: {
   });
   return (
     <picture>
-      <source media={DESKTOP_QUERY} srcSet={props.srcSet} sizes={props.sizes} />
+      {/* Sin optimización de imágenes (staging) Next no genera srcSet: se usa el src directo. */}
+      <source media={DESKTOP_QUERY} srcSet={props.srcSet ?? props.src} sizes={props.sizes} />
       {/* La fuente con media evita descargar capturas en móvil sin depender de JS. */}
       <img ref={imageRef} src={TRANSPARENT_PIXEL} alt="" aria-hidden="true" loading="eager"
         onError={onError}

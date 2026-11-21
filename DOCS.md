@@ -661,8 +661,9 @@ Si algo falla antes del paso 4, el dominio sigue sirviendo el deploy anterior.
 
 Qué verifica `verify.sh`:
 
-- Las 6 rutas responden 200, una inexistente da 404, y una imagen de
-  `/biblioteca-templates` llega como imagen.
+- Las 6 rutas responden 200, una inexistente da 404, una imagen de
+  `/biblioteca-templates` llega como imagen, y la vista previa del hero tiene una
+  captura real en su `<source srcset>`.
 - En staging, además: 401 sin contraseña, 401 con contraseña incorrecta, 401 en
   la imagen sin contraseña, y el header `X-Robots-Tag: noindex, nofollow` en
   las páginas autenticadas. Se exige el valor exacto porque Vercel agrega un
