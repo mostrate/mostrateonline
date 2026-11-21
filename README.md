@@ -59,5 +59,6 @@ componentes. Las demos usan `lib/templates/<slug>.ts`; ver
 - **Staging:** https://staging.mostrateonline.com.ar (cualquier rama, con
   contraseña).
 
-Se publica desde GitHub: **Actions → Deploy → Run workflow**, eligiendo destino y
-rama. Detalle, rollback y DNS en la sección 11 de [`DOCS.md`](DOCS.md).
+Se publica desde GitHub: **Actions → Deploy → Run workflow**. La rama se elige en
+*Use workflow from*, además del destino y, en staging, la contraseña. Detalle,
+rollback y DNS en la sección 11 de [`DOCS.md`](DOCS.md).

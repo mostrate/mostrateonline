@@ -1,5 +1,6 @@
 # Publica la landing en Vercel. Se lanza a mano: Actions → Deploy → Run workflow.
-# Correrlo siempre "from main" (el default): la rama a publicar se elige en el campo "rama".
+# La rama a publicar es la de "Use workflow from". Producción solo acepta main; staging
+# acepta cualquier rama que tenga este workflow (las ramas viejas: rebase sobre main).
 # Ver DOCS.md, sección 11.
 name: Deploy
 
@@ -13,10 +14,6 @@ on:
           - staging
           - produccion
         default: staging
-      rama:
-        description: "Rama a publicar (producción solo acepta main)"
-        type: string
-        default: main
       password:
         description: "Contraseña de staging (obligatoria en staging; en producción se ignora)"
         type: string
@@ -35,18 +32,18 @@ env:
 
 jobs:
   deploy:
-    name: ${{ inputs.destino }} ← ${{ inputs.rama }}
+    name: ${{ inputs.destino }} ← ${{ github.ref_name }}
     runs-on: ubuntu-latest
     env:
       DESTINO: ${{ inputs.destino }}
-      RAMA: ${{ inputs.rama }}
+      RAMA: ${{ github.ref_name }}
     steps:
       # El repo es público y los inputs no son secretos: la contraseña se lee del evento
       # (no de una variable, que se imprimiría en el log) y se enmascara antes de cualquier
       # otro paso. Desde acá aparece como *** en los logs.
       - name: Validar pedido
         env:
-          WORKFLOW_REF: ${{ github.ref_name }}
+          REF: ${{ github.ref }}
         run: |
           if [ "$DESTINO" = "staging" ]; then
             password=$(jq -r '.inputs.password // ""' "$GITHUB_EVENT_PATH")
@@ -58,35 +55,21 @@ jobs:
             delim="EOF_$(openssl rand -hex 16)"
             { echo "STAGING_PASSWORD<<$delim"; echo "$password"; echo "$delim"; } >> "$GITHUB_ENV"
           fi
-          if [ "$WORKFLOW_REF" != "main" ]; then
-            echo "::error::Corré el workflow desde main (Use workflow from: main) y elegí la rama en el campo 'rama'."
-            exit 1
-          fi
-          if [ "$DESTINO" = "produccion" ] && [ "$RAMA" != "main" ]; then
-            echo "::error::Producción solo publica main. Para probar otra rama, usá destino staging."
+          if [ "$DESTINO" = "produccion" ] && [ "$REF" != "refs/heads/main" ]; then
+            echo "::error::Producción solo publica main (elegiste $RAMA en 'Use workflow from'). Para probar otra rama, usá destino staging."
             exit 1
           fi
 
-      - name: Traer el workflow (main)
-        uses: actions/checkout@v4
-        with:
-          path: ci
-
-      - name: Traer la rama a publicar
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.rama }}
-          path: site
+      - uses: actions/checkout@v4
 
       - name: Staging - agregar contraseña e imágenes sin optimizar
         if: inputs.destino == 'staging'
-        working-directory: site
         run: |
           if ls middleware.* src/middleware.* >/dev/null 2>&1; then
             echo "::error::La rama ya tiene un middleware propio: combinarlo con deploy/staging-middleware.ts antes de publicar en staging."
             exit 1
           fi
-          cp ../ci/deploy/staging-middleware.ts middleware.ts
+          cp deploy/staging-middleware.ts middleware.ts
           if [ -f next.config.mjs ]; then
             mv next.config.mjs next.config.base.mjs
           elif ls next.config.* >/dev/null 2>&1; then
@@ -95,16 +78,14 @@ jobs:
           else
             echo "export default {};" > next.config.base.mjs
           fi
-          cp ../ci/deploy/staging-next-config.mjs next.config.mjs
+          cp deploy/staging-next-config.mjs next.config.mjs
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: site/package-lock.json
 
       - name: Lint, tests y build
-        working-directory: site
         run: |
           npm ci --no-audit --no-fund
           npm run lint
@@ -112,10 +93,9 @@ jobs:
           npm run build
 
       - name: Verificar el build local
-        working-directory: site
         run: |
           npx next start -p 3000 > "$RUNNER_TEMP/next.log" 2>&1 &
-          bash ../ci/deploy/verify.sh http://localhost:3000 "$DESTINO"
+          bash deploy/verify.sh http://localhost:3000 "$DESTINO"
 
       - name: Subir a Vercel (sin tocar el dominio todavía)
         id: deploy
@@ -127,7 +107,7 @@ jobs:
           # Se sube una copia sin .git: en Hobby, Vercel bloquea deploys cuyo último commit
           # es de alguien que no pertenece a la cuenta.
           mkdir "$RUNNER_TEMP/upload"
-          rsync -a --exclude .git --exclude node_modules --exclude .next site/ "$RUNNER_TEMP/upload/"
+          rsync -a --exclude .git --exclude node_modules --exclude .next ./ "$RUNNER_TEMP/upload/"
           cd "$RUNNER_TEMP/upload"
           args=(deploy --prod --skip-domain --yes --token "$VERCEL_TOKEN")
           if [ "$DESTINO" = "staging" ]; then
@@ -147,7 +127,7 @@ jobs:
       - name: Verificar el deploy nuevo (antes de pasarlo al dominio)
         env:
           URL: ${{ steps.deploy.outputs.url }}
-        run: bash ci/deploy/verify.sh "$URL" "$DESTINO"
+        run: bash deploy/verify.sh "$URL" "$DESTINO"
 
       - name: Pasar el deploy al dominio
         env:
@@ -162,10 +142,10 @@ jobs:
           URL: ${{ steps.deploy.outputs.url }}
         run: |
           if [ "$DESTINO" = "produccion" ]; then domain=https://mostrateonline.com.ar; else domain=https://staging.mostrateonline.com.ar; fi
-          bash ci/deploy/verify.sh "$domain" "$DESTINO"
+          bash deploy/verify.sh "$domain" "$DESTINO"
           {
             echo "### Publicado en $DESTINO"
             echo "- Dominio: $domain"
             echo "- Deploy: $URL"
-            echo "- Rama: \`$RAMA\` ($(git -C site rev-parse --short HEAD))"
+            echo "- Rama: \`$RAMA\` ($(git rev-parse --short HEAD))"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -632,11 +632,18 @@ con un merge.
 ### Cómo publicar
 
 1. GitHub → **Actions** → **Deploy** → **Run workflow**.
-2. *Use workflow from*: dejar **`main`** (siempre).
-3. *destino*: `staging` o `produccion`.
-4. *rama*: la rama a publicar. Producción solo acepta `main`.
-5. *password*: la contraseña de staging para ese deploy. Es obligatoria con
+2. *Use workflow from*: la rama a publicar.
+3. *Dónde publicar*: `staging` o `produccion`.
+4. *Contraseña de staging*: la contraseña para ese deploy. Es obligatoria con
    destino `staging`; con `produccion` se ignora.
+
+La Action frena sin publicar nada si se elige `produccion` con una rama que no
+es `main`, o `staging` sin contraseña.
+
+El workflow que corre es el de la rama elegida, así que la rama tiene que
+tenerlo. Si una rama es anterior al workflow, primero se actualiza con
+`git rebase origin/main`. Si no, GitHub avisa que el workflow no existe en esa
+rama.
 
 La Action hace, en orden:
 
@@ -681,7 +688,7 @@ agrega dos archivos de `deploy/`:
   la respuesta es un 400. Sin optimizar, el navegador pide cada imagen directo,
   con la contraseña, y siguen protegidas.
 
-Así cualquier rama sale protegida, aunque sea vieja, y producción no carga
+Así cualquier rama sale protegida en staging, y producción no carga
 middleware y sigue optimizando imágenes.
 
 La contraseña se escribe en el campo *password* cada vez que se publica en
