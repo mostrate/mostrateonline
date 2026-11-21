@@ -33,7 +33,7 @@ Este repo contiene **dos cosas distintas**:
 | Lenguaje | **TypeScript** (strict) |
 | Fuentes | **Syne** + **DM Sans** para la landing; títulos configurables en templates (sección 6). Todas alojadas en `app/fonts/` y cargadas con `next/font/local` (ver abajo) |
 | Testing | **Vitest** + **React Testing Library** (jsdom), alias `@/*` vía `vite-tsconfig-paths` |
-| Deploy | **Vercel** como destino documentado; estado remoto no verificado desde el repo |
+| Deploy | **Vercel** vía la Action *Deploy*: producción en `mostrateonline.com.ar`, staging con contraseña en `staging.mostrateonline.com.ar` (sección 11) |
 
 Requisito de la versión instalada de Next.js: Node ^18.18.0, ^19.8.0 o >=20. Comandos:
 
@@ -618,17 +618,127 @@ subagentes; Codex sigue el mismo archivo como procedimiento, referenciado desde
 
 ## 11. Deploy en Vercel
 
-1. Subir el repo a GitHub.
-2. Importar en Vercel (detecta Next.js solo).
-3. Deploy — sin variables de entorno.
-4. Para clientes: dominio propio como objetivo; la publicación depende de la
-   arquitectura pendiente de la sección 9, además de configurar los dominios.
+Hay dos destinos, cada uno en su propio proyecto de Vercel:
+
+- **Producción:** **https://mostrateonline.com.ar**, en línea desde el
+  2026-11-21. Solo publica `main`: nada que no esté mergeado en `main` sale a
+  producción.
+- **Staging:** **https://staging.mostrateonline.com.ar**, con usuario y
+  contraseña. Publica cualquier rama, para probarla antes de mergear.
+
+Los dos se publican con la Action **Deploy** de GitHub. Ninguno se publica solo
+con un merge.
+
+### Cómo publicar
+
+1. GitHub → **Actions** → **Deploy** → **Run workflow**.
+2. *Use workflow from*: dejar **`main`** (siempre).
+3. *destino*: `staging` o `produccion`.
+4. *rama*: la rama a publicar. Producción solo acepta `main`.
+
+La Action corre lint, tests y build. Si pasan, publica y verifica:
+
+- En producción, que las 6 rutas respondan 200.
+- En staging, que sin contraseña responda 401.
+
+El resumen del run muestra la URL y el commit publicado. La puede correr
+cualquiera con permiso de escritura en el repo.
+
+**Volver atrás:** en vercel.com → proyecto (`mostrateonline` o
+`mostrateonline-staging`) → Deployments, elegir el deploy anterior → **Instant
+Rollback**. No hace falta rebuild.
+
+### Contraseña de staging
+
+El código del sitio no tiene contraseña. Al publicar en staging, la Action
+copia [`deploy/staging-middleware.ts`](deploy/staging-middleware.ts) como
+`middleware.ts`, así:
+
+- cualquier rama sale protegida, aunque sea vieja;
+- producción no carga ningún middleware.
+
+Además, staging manda `X-Robots-Tag: noindex` para que no lo indexe Google.
+
+Las credenciales son env vars del proyecto `mostrateonline-staging` (Settings →
+Environment Variables, entorno **Production**):
+
+| Variable | Qué es |
+|---|---|
+| `STAGING_PASSWORD` | La contraseña. Sin ella, la Action **no publica** en staging (quedaría abierto) |
+| `STAGING_USER` | Opcional. Vacío = acepta cualquier usuario con la contraseña correcta |
+
+Para cambiar la contraseña: editar la variable en Vercel y volver a correr la
+Action con destino `staging`. El cambio no aplica hasta el próximo deploy.
+
+Vercel tiene su propia protección con contraseña, pero es un add-on pago de Pro.
+Por eso se usa Basic Auth, el mismo esquema que el staging de los sitios de
+clientes.
+
+Si una rama trae su propio `middleware.ts`, la Action frena. Antes de publicar
+en staging hay que combinarlo con el de `deploy/`.
+
+### Configuración
+
+| Pieza | Producción | Staging |
+|---|---|---|
+| Proyecto de Vercel | `mostrateonline` | `mostrateonline-staging` |
+| ID | `prj_LAAWVEfOZXPhgBqReajKXMOge6kZ` | `prj_ZzzosmEoWzFvPhd4RoiX8qfALFjN` |
+| Dominio | `mostrateonline.com.ar` | `staging.mostrateonline.com.ar` |
+| Env vars | Ninguna | `STAGING_PASSWORD`, `STAGING_USER` |
+
+- **Cuenta de Vercel:** Hobby de `internal@mostrateonline.com.ar`, scope
+  `mostrate`.
+- **Proyectos no conectados a GitHub:** en Hobby, Vercel bloquea los deploys
+  cuyo último commit es de alguien que no pertenece a la cuenta (los socios
+  commitean con su mail). Por eso la Action sube una copia **sin `.git`** con la
+  CLI.
+- **GitHub, secret** `VERCEL_TOKEN`: token de la cuenta de Vercel (hoy el mismo
+  que usa mostrate-kit). Se rota creando uno nuevo en Vercel y cargándolo con
+  `gh secret set VERCEL_TOKEN -R mostrate/mostrateonline`.
+- **GitHub, variables:** `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_PRODUCCION` y
+  `VERCEL_PROJECT_ID_STAGING`.
+- **Redirecciones:**
+  - `www.mostrateonline.com.ar` → 308 al dominio principal (lo hace Vercel).
+  - `mostrateonline.com` y su `www` → 301 a `mostrateonline.com.ar` (lo hace
+    Cloudflare, zona `.com`).
+- **Certificados:** Let's Encrypt, los emite y renueva Vercel solo.
+
+DNS en Cloudflare (zona `mostrateonline.com.ar`), **sin proxy** (nube gris).
+Con proxy, Vercel no puede renovar los certificados:
+
+| Tipo | Nombre | Contenido |
+|---|---|---|
+| A | `@` | `216.198.79.1` |
+| A | `@` | `64.29.17.1` |
+| CNAME | `www` | `ae445a8c4245d183.vercel-dns-017.com` |
+| CNAME | `staging` | `da097e677046126b.vercel-dns-017.com` |
+
+Son los valores que recomienda Vercel para cada proyecto (Project → Settings →
+Domains). Los MX de Zoho y los registros de Resend (`notificaciones.`) son de la
+misma zona: no tocarlos.
+
+### Pendientes
+
+- La cuenta de Vercel es Hobby, que no admite uso comercial. Con Vercel Pro se
+  pueden conectar los proyectos al repo y usar la protección con contraseña de
+  Vercel.
+- Reemplazar el `VERCEL_TOKEN` del repo por un token dedicado, para revocarlo
+  sin afectar al kit.
+- Falta `metadataBase` en `app/layout.tsx`, y no hay `sitemap.xml` ni
+  `robots.txt`.
+
+### Sitios de clientes
+
+Dominio propio como objetivo. La publicación depende de la arquitectura
+pendiente de la sección 9, además de configurar los dominios.
 
 ---
 
 ## 12. Estado actual / pendientes
 
 - [x] Landing de Mostrate completa y responsive.
+- [x] Landing en producción en `mostrateonline.com.ar` y staging con contraseña,
+      publicados con la Action *Deploy* (sección 11).
 - [x] Motor de theming reutilizable (3 temas por template).
 - [x] Template **Profesional** desarrollado.
 - [x] Template **Comercio** desarrollado.
