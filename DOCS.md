@@ -297,6 +297,9 @@ abren la biblioteca, ambos en una pestaña nueva.
   **Hay que regenerarlas si cambia el hero de un template** y actualizar la
   versión de sus URLs en HeroPreview para invalidar la caché de imágenes.
   No hay script versionado todavía.
+- El simulador rota cada 12 segundos y pausa la rotación y flotación mientras
+  el puntero o el foco de teclado están sobre él. Al salir reinicia la espera.
+  Si una captura falla, conserva la anterior y continúa con el siguiente modelo.
 
 ### 🔧 Config central — `lib/config.ts`
 Centraliza los precios, los datos de contacto y el contenido comercial de la
