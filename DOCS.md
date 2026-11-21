@@ -664,7 +664,9 @@ Qué verifica `verify.sh`:
 - Las 6 rutas responden 200, una inexistente da 404, y una imagen de
   `/biblioteca-templates` llega como imagen.
 - En staging, además: 401 sin contraseña, 401 con contraseña incorrecta, 401 en
-  la imagen sin contraseña, y que esté el header `noindex`.
+  la imagen sin contraseña, y el header `X-Robots-Tag: noindex, nofollow` en
+  las páginas autenticadas. Se exige el valor exacto porque Vercel agrega un
+  `noindex` propio en las URLs `*.vercel.app`, y ese no cuenta.
 
 Se puede correr a mano contra un `next start` local:
 `STAGING_PASSWORD=… bash deploy/verify.sh http://localhost:3000 staging`.
@@ -682,14 +684,18 @@ agrega dos archivos de `deploy/`:
 
 - [`staging-middleware.ts`](deploy/staging-middleware.ts), copiado como
   `middleware.ts`: pide la contraseña con Basic Auth (el usuario puede ser
-  cualquiera) y manda `X-Robots-Tag: noindex`. Si la contraseña no llega,
-  responde 503 y no sirve nada.
+  cualquiera). Manda `X-Robots-Tag: noindex` en el 401, y si la contraseña no
+  llega, responde 503 y no sirve nada.
 - [`staging-next-config.mjs`](deploy/staging-next-config.mjs), copiado como
   `next.config.mjs`: envuelve el de la rama (renombrado a `next.config.base.mjs`)
-  y desactiva la optimización de imágenes. Hace falta porque `/_next/image` pide
-  la imagen original por dentro sin las credenciales, el middleware la rechaza y
-  la respuesta es un 400. Sin optimizar, el navegador pide cada imagen directo,
-  con la contraseña, y siguen protegidas.
+  y hace dos cosas:
+  - Desactiva la optimización de imágenes. `/_next/image` pide la imagen
+    original por dentro sin las credenciales, el middleware la rechaza y la
+    respuesta es un 400. Sin optimizar, el navegador pide cada imagen directo,
+    con la contraseña, y siguen protegidas.
+  - Agrega `X-Robots-Tag: noindex, nofollow` a todas las rutas con `headers()`.
+    En Vercel, el header que pone el middleware no llega a las páginas
+    autenticadas; el de `headers()` sí.
 
 Así cualquier rama sale protegida en staging, y producción no carga
 middleware y sigue optimizando imágenes.
