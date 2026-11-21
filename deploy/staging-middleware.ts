@@ -1,12 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Usuario y contraseña para staging (staging.mostrateonline.com.ar).
+ * Contraseña para staging (staging.mostrateonline.com.ar), con Basic Auth: acepta
+ * cualquier usuario si la contraseña es correcta.
  * No es parte del sitio: el workflow de deploy lo copia como `middleware.ts` solo al
  * publicar en staging, así cualquier rama sale protegida y producción no lo carga.
- * STAGING_PASSWORD y STAGING_USER (opcional: vacío = acepta cualquier usuario) los
- * inyecta el workflow desde GitHub. Sin contraseña no se sirve nada: staging nunca
- * queda abierto. Ver DOCS.md, sección 11.
+ * STAGING_PASSWORD es la que se escribe al lanzar el workflow. Sin contraseña no se
+ * sirve nada: staging nunca queda abierto. Ver DOCS.md, sección 11.
  */
 export function middleware(request: NextRequest) {
   const password = process.env.STAGING_PASSWORD;
@@ -20,12 +20,7 @@ export function middleware(request: NextRequest) {
   const header = request.headers.get("authorization");
   if (header?.startsWith("Basic ")) {
     const decoded = decodeBasic(header.slice(6));
-    const expectedUser = process.env.STAGING_USER?.trim().toLowerCase();
-    if (
-      decoded &&
-      (!expectedUser || decoded.user.trim().toLowerCase() === expectedUser) &&
-      safeEqual(decoded.password, password)
-    ) {
+    if (decoded && safeEqual(decoded.password, password)) {
       const response = NextResponse.next();
       response.headers.set("X-Robots-Tag", "noindex, nofollow");
       return response;
