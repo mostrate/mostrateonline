@@ -4,7 +4,7 @@ import SectionHeader from "./SectionHeader";
 export default function FAQ() {
   return (
     <section id="faq" className="border-t border-line">
-      <div className="mx-auto grid max-w-shell gap-12 px-[clamp(20px,4vw,60px)] py-[clamp(64px,8vw,112px)] lg:grid-cols-[5fr_7fr]">
+      <div className="mx-auto grid max-w-shell gap-12 px-[clamp(20px,4vw,60px)] pt-[clamp(64px,8vw,112px)] pb-[clamp(28px,3.5vw,44px)] lg:grid-cols-[5fr_7fr]">
         <SectionHeader label={faq.label} title={faq.title} subtitle={faq.subtitle} />
         <div className="border-t border-line">
           {faq.items.map((item, index) => (

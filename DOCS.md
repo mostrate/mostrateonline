@@ -125,14 +125,12 @@ components/
     Nav.tsx                      → nav fija con blur + menú mobile a pantalla completa
     Logo.tsx                     → wordmark "mostrate"
     Icons.tsx                    → íconos de línea SVG inline (sin dependencias)
-    Button.tsx                   → botón único de la landing (flecha circular, halo y hover)
+    Button.tsx                   → botón único de la landing (color y profundidad suave, texto centrado y foco visible)
     Hero.tsx                     → titular, propuesta y CTAs de portada
-    HeroPreview.tsx              → composición animada con previews reales en la portada
-    Demos.tsx                    → sección dedicada a las demos en vivo
-    LiveStage.tsx                → templates reales en iframes (compu + celular)
+    HeroPreview.tsx              → vidriera animada que alterna previews reales en la portada
     SectionHeader.tsx            → encabezado reutilizable (label + título + sub)
     Servicios.tsx                → lista numerada con encabezado fijo (sticky)
-    Templates.tsx                → galería escalonada de la biblioteca de templates
+    Templates.tsx                → galería de la biblioteca de templates
     Tilt.tsx                     → inclinación 3D siguiendo el mouse
     Precios.tsx                  → 2 planes (precios desde config)
     Contacto.tsx                 → formulario (mailto) + datos
@@ -194,15 +192,14 @@ chrome --headless=new --no-pdf-header-footer --virtual-time-budget=15000 \
 ## 4. Sistema de diseño
 
 ### Dirección visual (landing de Mostrate — "vidriera en vivo", oscura)
-Rediseñada el 2026-09-23. La landing vende diseño, así que tiene que demostrarlo
-en vez de describirlo: el eje es la **vidriera en vivo** (los templates reales
-funcionando dentro de la página). Criterios para no caer en el look genérico
+La landing vende diseño, así que tiene que demostrarlo con capturas reales de
+los templates y acceso a sus demos desde la biblioteca. Criterios para no caer en el look genérico
 "hecho con IA":
 
-- **Mostrar el producto real**: demos reales en su propia sección y capturas
-  reales en Templates, nunca mockups de relleno.
+- **Mostrar el producto real**: capturas reales en la portada y la biblioteca,
+  con acceso a las demos, nunca mockups de relleno.
 - **Composición distinta por sección** (titular a todo el ancho, lista con
-  encabezado sticky, galería escalonada, cierre gigante), no el patrón repetido
+  encabezado sticky, galería de muestras, cierre gigante), no el patrón repetido
   rótulo + título + grilla de cards iguales.
 - **Tipografía como protagonista**: Syne 800 a gran escala para títulos y DM
   Sans para texto e interfaz.
@@ -210,11 +207,7 @@ funcionando dentro de la página). Criterios para no caer en el look genérico
   animada de previews reales en el hero, cards con tilt y sello girando en el
   plan destacado.
 - Sin emojis (íconos de línea en `Icons.tsx`), sin blobs ni gradientes violeta.
-- **Botones** (`Button.tsx`, un solo componente para toda la landing): forma
-  de píldora, flecha dentro de un círculo y halo azul para sostener la llamada
-  a la acción. En hover se elevan levemente, gana presencia el halo y la flecha
-  avanza; el primario además recibe un brillo breve. Se descartó un hover con
-  inversión de color y texto rodando por recargado.
+- **Botones**: cápsulas de doble contorno con tipografía Syne centrada. Azul eléctrico para la acción principal y marfil para contacto, con igual tamaño en portada. El contorno interior se expande hacia afuera en hover y la sombra acompaña la elevación; sin flechas, texturas, degradados ni base de relieve. Se respeta movimiento reducido y se conserva el foco visible (28/10/2026).
 
 Una primera iteración clara ("atelier", generada con Stitch) se descartó el mismo
 día por genérica; la paleta oscura original se mantuvo por preferencia.
@@ -241,9 +234,9 @@ usa esquinas rectas o `rounded-lg` en los marcos.
 Cargadas en [`app/layout.tsx`](app/layout.tsx) y expuestas como variables CSS.
 La landing usa:
 
-- **Syne** 800 (`font-syne`) → titulares, logo, números. Es muy ancha: los
-  tamaños gigantes (hero, "¿Arrancamos?", wordmark del footer) están calculados
-  en `vw` para que entren; revisarlos si cambia el copy.
+- **Syne** 800 (`font-syne`) → titulares, logo y números. Es muy ancha: el
+  tamaño del hero es fluido y debe revisarse si cambia el copy. El título de
+  contacto comparte la escala y jerarquía de los demás títulos de sección.
 - **DM Sans** (`font-dmsans`) → texto, interfaz y acentos itálicos. Es la
   fuente base del `body`.
 
@@ -257,10 +250,14 @@ Se usa `clamp()` para tamaños fluidos + breakpoints de Tailwind y arbitrarios
 notebook chica, tablet, celu grande, celu chico.
 
 ### Animaciones
-- **Composición del hero**: los previews de escritorio y móvil flotan a ritmos
-  distintos, con un halo azul suave detrás.
-- **Demos en vivo**: el selector cambia la demo embebida y rota sola cada 7 s
-  hasta que el visitante elige un rubro.
+- **Composición del hero**: las capturas de escritorio y teléfono alternan en
+  sincronía cada 12 s. Elegir una pestaña detiene la rotación y la flotación;
+  movimiento reducido desactiva ambas. La barra muestra una dirección de
+  ejemplo correspondiente al negocio de la captura visible.
+  El simulador aparece desde `lg`; el HTML inicial permite cargar las primeras
+  capturas en escritorio sin esperar a la hidratación y evita descargarlas en
+  móvil. Las siguientes se solicitan al elegirlas o al avanzar y se muestran
+  con fundido cuando terminaron de cargar ambas versiones.
 - Todas las animaciones de la landing respetan `prefers-reduced-motion` (ver
   `globals.css`).
 
@@ -270,35 +267,39 @@ notebook chica, tablet, celu grande, celu chico.
 
 Ensamblada en [`app/page.tsx`](app/page.tsx). Secciones en orden:
 
-1. **Nav** — fija, logo, links numerados a las secciones, CTA "Hablemos", menú mobile a pantalla completa (el nav queda visible encima para poder cerrarlo).
+1. **Nav** — fija, logo, links numerados a las secciones, CTA "Hablemos", menú mobile a pantalla completa (el nav queda visible encima para poder cerrarlo). Links de escritorio de 1.05 rem; por debajo de 1280 px se usa el menú plegable para conservar el espacio con la tipografía ampliada.
 2. **Hero** — ocupa una pantalla: título, propuesta y CTAs a la izquierda;
    previews reales animados de escritorio y móvil a la derecha en escritorio.
 3. **Servicios** — lista numerada con el encabezado fijo al costado.
-4. **Templates / Demos en vivo** — la demo real de cada template se muestra en
-   un iframe escalado dentro de un marco de compu (desde tablet) y de celular.
-   Un selector de rubro cambia la demo; rota sola cada 7 s hasta que el visitante
-   elige (no rota con reduced-motion). Mientras carga, un boceto gris tapa el
-   iframe y se desvanece: el sitio "se arma". Debajo del escenario hay accesos
-   a la demo activa y a la biblioteca en todos los tamaños; el marco desktop
-   repite el acceso a la biblioteca.
-5. **Cómo trabajamos** — recorrido de cuatro pasos desde el primer contacto hasta la publicación.
-6. **Precios** — 2 planes; los precios salen de `config.ts`.
-7. **FAQ** — preguntas frecuentes con controles nativos `details` / `summary`.
-8. **Contacto** — "¿Arrancamos?" + formulario (abre el mail con los datos precargados) + info.
-9. **Footer** — links y datos de contacto.
+4. **Cómo trabajamos** — recorrido de cuatro pasos desde el primer contacto hasta la publicación.
+5. **Precios** — 2 planes; los precios salen de `config.ts`.
+6. **FAQ** — preguntas frecuentes con controles nativos `details` / `summary`.
+7. **Contacto** — "¿Arrancamos?" + formulario (abre el mail con los datos precargados) + info.
+8. **Footer** — links y datos de contacto.
 
 La biblioteca vive en [`/biblioteca-templates`](app/biblioteca-templates/page.tsx).
-Renderiza la galería `Templates` sin cambios visuales: capturas reales
+Renderiza la galería `Templates`: capturas reales
 (`public/previews/<slug>.webp`) con tilt, cada una enlazada a
-`/templates/<slug>`. Incluye Ambient, Nav, Footer y un enlace de vuelta al
-inicio; los links compartidos de navegación usan anclas absolutas a `/`.
+`/templates/<slug>`. Incluye Ambient, Nav y Footer; el logo de navegación lleva
+al inicio y los demás enlaces usan anclas absolutas a `/`. Desde
+la landing, solo «Templates» en la navegación y «Explorar diseños» en el hero
+abren la biblioteca, ambos en una pestaña nueva.
 
 ### Demos embebidas y capturas
 - `ThemeProvider` detecta si la demo corre dentro de un iframe y en ese caso
   no monta los controles de demo (tema, tipografía, "Volver a Mostrate").
 - Las capturas de `public/previews/` se generan cargando cada demo en un iframe
-  de 1440×900 y guardándola en WebP. **Hay que regenerarlas si cambia el hero de
-  un template**; no hay script versionado todavía.
+  de 1440×900 para escritorio y 390×844 para móvil, con escala de píxeles 2,
+  esperando fuentes e imágenes visibles y ocultando el indicador de desarrollo.
+  Se guardan en WebP calidad 95: `<slug>.webp` (2880×1800) y
+  `<slug>-mobile.webp` (780×1688). HeroPreview usa imágenes separadas y conserva
+  esas proporciones; nunca recorta la captura desktop para simular un celular.
+  **Hay que regenerarlas si cambia el hero de un template** y actualizar la
+  versión de sus URLs en HeroPreview para invalidar la caché de imágenes.
+  No hay script versionado todavía.
+- El simulador rota cada 12 segundos y pausa la rotación y flotación mientras
+  el puntero o el foco de teclado están sobre él. Al salir reinicia la espera.
+  Si una captura falla, conserva la anterior y continúa con el siguiente modelo.
 
 ### 🔧 Config central — `lib/config.ts`
 Centraliza los precios, los datos de contacto y el contenido comercial de la
@@ -307,7 +308,7 @@ o cerrar el menú y el asunto/cuerpo del correo de contacto. Bloques principales
 
 - `pricing` → **precios** (`inicial`, `mensual`). *Editá esto para cambiar los precios.*
 - `contact` → email, WhatsApp, ubicación.
-- `site`, `nav`, `hero`, `demos`, `library`, `servicios`, `templates`, `precios`, `contacto`, `footer`.
+- `site`, `nav`, `hero`, `servicios`, `templates`, `precios`, `contacto`, `footer`.
 
 ---
 
@@ -858,6 +859,9 @@ constituyen una integración operativa mientras no se configure el número.
   acceso a ella —más la demo activa— desde todos los tamaños. Se retiró la
   antigua cinta rotativa y se unificó la jerarquía de los CTAs, incluido
   "Hablemos" en el header.
+- **2026-11-07** — La portada usa cuatro previews sincronizados y enlaza a la
+  biblioteca independiente. Se ajustan la duración y pausa del simulador, los
+  enlaces de regreso, la carga de imágenes y la cabecera de la biblioteca.
 
 ---
 

@@ -37,49 +37,34 @@ export const site = {
 /* ─────────────────────────────  NAV  ───────────────────────────────── */
 export const nav = {
   links: [
-    { label: "Servicios", href: "/#servicios" },
-    { label: "Templates", href: "/#templates" },
-    { label: "Cómo trabajamos", href: "/#como-trabajamos" },
-    { label: "Precios", href: "/#precios" },
-    { label: "Preguntas frecuentes", href: "/#faq" },
+    { label: "Servicios", href: "/#servicios", newTab: false, inFooter: true },
+    { label: "Templates", href: "/biblioteca-templates", newTab: true, inFooter: false },
+    { label: "Cómo trabajamos", href: "/#como-trabajamos", newTab: false, inFooter: true },
+    { label: "Precios", href: "/#precios", newTab: false, inFooter: true },
+    { label: "Preguntas frecuentes", href: "/#faq", newTab: false, inFooter: true },
   ],
   cta: { label: "Hablemos", href: "/#contacto" },
 };
 
 /* ─────────────────────────────  HERO  ──────────────────────────────── */
 export const hero = {
-  eyebrow: "PÁGINAS WEB PARA NEGOCIOS REALES",
+  eyebrow: "PÁGINAS WEB HECHAS A TU MEDIDA",
   // El título se arma en 3 partes; "highlight" toma el color de acento.
   title: {
-    before: "Tu negocio merece una ",
-    highlight: "presencia digital",
-    after: " que lo represente.",
+    before: "Hacé que tu negocio sea ",
+    highlight: "fácil de elegir.",
+    after: "",
   },
   subtitle:
-    "Una página clara y propia para que quien llegue entienda tu propuesta y dé el próximo paso.",
+    "Una página clara, propia y lista para que más personas entiendan lo que hacés y quieran contactarte.",
   actions: {
-    primary: { label: "Ver templates", href: "#templates" },
-    secondary: { label: "Contactar", href: "#contacto" },
+    primary: { label: "Explorar diseños", href: "/biblioteca-templates" },
+    secondary: { label: "Contarnos tu idea", href: "#contacto" },
   },
-  proof: "Diseño, tiempos y precio claros desde el comienzo.",
   preview: {
-    label: "Tu próxima página",
-    identity: "Diseño a medida",
-    detail: "01 / Tu identidad",
+    label: "Previsualización de los cuatro modelos en computadora y celular",
+    selector: "Elegir modelo de la portada",
   },
-};
-
-export const demos = {
-  label: "Demos en vivo",
-  title: "Mirá cada diseño en funcionamiento",
-  subtitle:
-    "Explorá los templates en escritorio y celular antes de elegir el punto de partida para tu página.",
-  openDemo: "Abrir demo",
-  library: "Ver todos los templates",
-};
-
-export const library = {
-  backToHome: "Volver al inicio",
 };
 
 /* ─────────────────────────────  SERVICIOS  ─────────────────────────── */
@@ -122,24 +107,28 @@ export const templates = {
     {
       slug: "profesional",
       name: "Profesional",
+      previewAddress: "estudiorivas.com",
       desc: "Ideal para contadores, abogados, consultores.",
       tag: "Servicios profesionales",
     },
     {
       slug: "comercio",
       name: "Comercio",
+      previewAddress: "casabonita.com.ar",
       desc: "Para tiendas, locales, productos físicos.",
       tag: "Comercio local",
     },
     {
       slug: "gastronomia",
       name: "Gastronomía",
+      previewAddress: "cantinasorrento.com.ar",
       desc: "Restaurantes, cafés, deliveries, catering.",
       tag: "Gastronomía",
     },
     {
       slug: "bienestar",
       name: "Bienestar",
+      previewAddress: "nucleotraining.com.ar",
       desc: "Gimnasios, nutricionistas, psicólogos, coaches.",
       tag: "Salud y bienestar",
     },
