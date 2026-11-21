@@ -55,6 +55,9 @@ componentes. Las demos usan `lib/templates/<slug>.ts`; ver
 
 ## Deploy en Vercel
 
-1. Subir el repo a GitHub.
-2. Importar el proyecto en Vercel (detecta Next.js automáticamente).
-3. Deploy — sin variables de entorno requeridas.
+- **Producción:** https://mostrateonline.com.ar (solo `main`).
+- **Staging:** https://staging.mostrateonline.com.ar (cualquier rama, con
+  contraseña).
+
+Se publica desde GitHub: **Actions → Deploy → Run workflow**, eligiendo destino y
+rama. Detalle, rollback y DNS en la sección 11 de [`DOCS.md`](DOCS.md).

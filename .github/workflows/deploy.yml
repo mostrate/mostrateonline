@@ -1,0 +1,139 @@
+# Publica la landing en Vercel. Se lanza a mano: Actions → Deploy → Run workflow.
+# Correrlo siempre "from main" (el default): la rama a publicar se elige en el campo "rama".
+# Ver DOCS.md, sección 11.
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      destino:
+        description: "Dónde publicar"
+        type: choice
+        options:
+          - staging
+          - produccion
+        default: staging
+      rama:
+        description: "Rama a publicar (producción solo acepta main)"
+        type: string
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ inputs.destino }}
+  cancel-in-progress: false
+
+env:
+  VERCEL_CLI: vercel@63.1.2
+  VERCEL_TELEMETRY_DISABLED: "1"
+
+jobs:
+  deploy:
+    name: ${{ inputs.destino }} ← ${{ inputs.rama }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar pedido
+        env:
+          DESTINO: ${{ inputs.destino }}
+          RAMA: ${{ inputs.rama }}
+          WORKFLOW_REF: ${{ github.ref_name }}
+        run: |
+          if [ "$WORKFLOW_REF" != "main" ]; then
+            echo "::error::Corré el workflow desde main (Use workflow from: main) y elegí la rama en el campo 'rama'."
+            exit 1
+          fi
+          if [ "$DESTINO" = "produccion" ] && [ "$RAMA" != "main" ]; then
+            echo "::error::Producción solo publica main. Para probar otra rama, usá destino staging."
+            exit 1
+          fi
+
+      - name: Traer el workflow (main)
+        uses: actions/checkout@v4
+        with:
+          path: ci
+
+      - name: Traer la rama a publicar
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.rama }}
+          path: site
+
+      - name: Staging - verificar contraseña y agregar el middleware
+        if: inputs.destino == 'staging'
+        working-directory: site
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID_STAGING }}
+        run: |
+          # Sin STAGING_PASSWORD en Vercel, staging quedaría abierto: no se publica.
+          has=$(curl -fsS -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v9/projects/$PROJECT_ID/env" |
+            jq '[.envs[] | select(.key == "STAGING_PASSWORD" and (.target | index("production")))] | length')
+          if [ "$has" = "0" ]; then
+            echo "::error::Falta STAGING_PASSWORD (entorno Production) en el proyecto mostrateonline-staging de Vercel."
+            exit 1
+          fi
+          if [ -e middleware.ts ] || [ -e src/middleware.ts ]; then
+            echo "::error::La rama ya tiene un middleware.ts propio: combinarlo con deploy/staging-middleware.ts antes de publicar en staging."
+            exit 1
+          fi
+          cp ../ci/deploy/staging-middleware.ts middleware.ts
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Lint, tests y build
+        working-directory: site
+        run: |
+          npm ci --no-audit --no-fund
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Publicar en Vercel
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ inputs.destino == 'produccion' && vars.VERCEL_PROJECT_ID_PRODUCCION || vars.VERCEL_PROJECT_ID_STAGING }}
+        run: |
+          # Se sube una copia sin .git: en Hobby, Vercel bloquea deploys cuyo último commit
+          # es de alguien que no pertenece a la cuenta.
+          mkdir "$RUNNER_TEMP/upload"
+          rsync -a --exclude .git --exclude node_modules --exclude .next site/ "$RUNNER_TEMP/upload/"
+          cd "$RUNNER_TEMP/upload"
+          npx --yes "$VERCEL_CLI" deploy --prod --yes --token "$VERCEL_TOKEN" > "$RUNNER_TEMP/deploy.out"
+          cat "$RUNNER_TEMP/deploy.out"
+
+      - name: Verificar
+        env:
+          DESTINO: ${{ inputs.destino }}
+          RAMA: ${{ inputs.rama }}
+        run: |
+          if [ "$DESTINO" = "produccion" ]; then url=https://mostrateonline.com.ar; expected=200
+          else url=https://staging.mostrateonline.com.ar; expected=401; fi
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$url/" || true)
+            [ "$code" = "$expected" ] && break
+            sleep 5
+          done
+          if [ "$code" != "$expected" ]; then
+            echo "::error::$url respondió $code (esperaba $expected)."
+            exit 1
+          fi
+          if [ "$DESTINO" = "produccion" ]; then
+            for p in /biblioteca-templates /templates/profesional /templates/comercio /templates/gastronomia /templates/bienestar; do
+              c=$(curl -s -o /dev/null -w "%{http_code}" "$url$p")
+              [ "$c" = "200" ] || { echo "::error::$url$p respondió $c"; exit 1; }
+            done
+          fi
+          {
+            echo "### Publicado en $DESTINO"
+            echo "- URL: $url"
+            echo "- Rama: \`$RAMA\` ($(git -C site rev-parse --short HEAD))"
+          } >> "$GITHUB_STEP_SUMMARY"
