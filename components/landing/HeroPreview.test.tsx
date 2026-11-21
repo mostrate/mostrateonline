@@ -36,17 +36,67 @@ describe("HeroPreview", () => {
     fireEvent.load(next[1].querySelector("img")!);
     expect(next.every((picture) => picture.querySelector("img")?.className.includes("opacity-100"))).toBe(true);
     expect(screen.getByText("nucleotraining.com.ar")).toBeDefined();
-    act(() => vi.advanceTimersByTime(36000));
-    expect(screen.getByRole("button", { name: "Bienestar" }).getAttribute("aria-pressed")).toBe("true");
+    act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("detiene la animación al seleccionar el modelo actual", () => {
+  it("pausa al entrar con el puntero y reanuda al salir", () => {
     render(<HeroPreview />);
+    const simulator = screen.getByRole("complementary");
+    fireEvent.mouseEnter(simulator);
     fireEvent.click(screen.getByRole("button", { name: "Profesional" }));
     act(() => vi.advanceTimersByTime(24000));
     expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
-    expect(screen.getByRole("complementary").className).toContain("hero-preview-paused");
-    expect(screen.queryByRole("button", { name: "Pausar" })).toBeNull();
+    expect(simulator.className).toContain("hero-preview-paused");
+    fireEvent.mouseLeave(simulator);
+    act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: "Comercio" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("pausa mientras se navega con teclado y reanuda al salir", () => {
+    render(<HeroPreview />);
+    const button = screen.getByRole("button", { name: "Profesional" });
+    vi.spyOn(button, "matches").mockReturnValue(true);
+    fireEvent.focus(button);
+    act(() => vi.advanceTimersByTime(24000));
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.blur(button);
+    act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: "Comercio" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("reinicia el tiempo al elegir el modelo actual", () => {
+    render(<HeroPreview />);
+    act(() => vi.advanceTimersByTime(11000));
+    fireEvent.click(screen.getByRole("button", { name: "Profesional" }));
+    act(() => vi.advanceTimersByTime(11999));
+    expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.getByRole("button", { name: "Comercio" }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("avanza si falla una captura y conserva la imagen anterior", () => {
+    const { container } = render(<HeroPreview />);
+    act(() => vi.advanceTimersByTime(12000));
+    const image = Array.from(container.querySelectorAll("picture"))
+      .find((picture) => picture.querySelector("source")?.getAttribute("srcset")?.includes("comercio"))!
+      .querySelector("img")!;
+    fireEvent.error(image);
+    expect(screen.getByText("estudiorivas.com")).toBeDefined();
+    act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: /Gastronom/ }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("reconoce las capturas iniciales cargadas antes de hidratar", () => {
+    const complete = vi.spyOn(HTMLImageElement.prototype, "complete", "get").mockReturnValue(true);
+    const currentSrc = vi.spyOn(HTMLImageElement.prototype, "currentSrc", "get").mockReturnValue("http://localhost/cached.webp");
+    const naturalWidth = vi.spyOn(HTMLImageElement.prototype, "naturalWidth", "get").mockReturnValue(100);
+    render(<HeroPreview />);
+    for (let index = 0; index < 4; index++) act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: "Profesional" }).getAttribute("aria-pressed")).toBe("true");
+    act(() => vi.advanceTimersByTime(12000));
+    expect(screen.getByRole("button", { name: "Comercio" }).getAttribute("aria-pressed")).toBe("true");
+    complete.mockRestore(); currentSrc.mockRestore(); naturalWidth.mockRestore();
   });
 
   it("muestra la dirección correspondiente a cada negocio", () => {

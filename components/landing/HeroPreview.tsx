@@ -1,19 +1,32 @@
 "use client";
 
 import { getImageProps } from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { hero, templates } from "@/lib/config";
 
 const ROTATION_MS = 12000;
 const DESKTOP_QUERY = "(min-width: 1024px)";
 const TRANSPARENT_PIXEL = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 
-function PreviewImage({ slug, mobile, visible, onLoad }: {
+function PreviewImage({ slug, mobile, visible, onLoad, onError }: {
   slug: string;
   mobile: boolean;
   visible: boolean;
   onLoad: () => void;
+  onError: () => void;
 }) {
+  const imageRef = useRef<HTMLImageElement>(null);
+  const loadRef = useRef(onLoad);
+  const errorRef = useRef(onError);
+  loadRef.current = onLoad;
+  errorRef.current = onError;
+
+  useEffect(() => {
+    const image = imageRef.current;
+    if (!image || !image.complete || !image.currentSrc || image.currentSrc.startsWith("data:")) return;
+    if (image.naturalWidth > 0) loadRef.current();
+    else errorRef.current();
+  }, []);
   const { props } = getImageProps({
     src: `/previews/${slug}${mobile ? "-mobile" : ""}.webp?v=20261028`,
     alt: "",
@@ -24,7 +37,8 @@ function PreviewImage({ slug, mobile, visible, onLoad }: {
     <picture>
       <source media={DESKTOP_QUERY} srcSet={props.srcSet} sizes={props.sizes} />
       {/* La fuente con media evita descargar capturas en móvil sin depender de JS. */}
-      <img src={TRANSPARENT_PIXEL} alt="" aria-hidden="true" loading="eager"
+      <img ref={imageRef} src={TRANSPARENT_PIXEL} alt="" aria-hidden="true" loading="eager"
+        onError={onError}
         onLoad={(event) => {
           if (!event.currentTarget.currentSrc.startsWith("data:") && window.matchMedia(DESKTOP_QUERY).matches) onLoad();
         }}
@@ -37,10 +51,14 @@ export default function HeroPreview() {
   const [active, setActive] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(true);
   const [desktop, setDesktop] = useState(false);
-  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [selection, setSelection] = useState(0);
+  const paused = hovered || focused;
   const [visited, setVisited] = useState([0]);
   const [shown, setShown] = useState(0);
-  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  const [loaded, setLoaded] = useState<Record<string, "loaded" | "error">>({});
+  const failed = loaded[`${active}-desktop`] === "error" || loaded[`${active}-mobile`] === "error";
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -59,26 +77,34 @@ export default function HeroPreview() {
   }, []);
 
   useEffect(() => {
-    if (reducedMotion || paused || !desktop || shown !== active) return;
+    if (reducedMotion || paused || !desktop || (shown !== active && !failed)) return;
     const timer = setTimeout(() => setActive((value) => (value + 1) % templates.items.length), ROTATION_MS);
     return () => clearTimeout(timer);
-  }, [active, shown, reducedMotion, paused, desktop]);
+  }, [active, shown, reducedMotion, paused, desktop, failed, selection]);
 
   useEffect(() => {
     setVisited((previous) => previous.includes(active) ? previous : [...previous, active]);
-    if (loaded[`${active}-desktop`] && loaded[`${active}-mobile`]) setShown(active);
+    if (loaded[`${active}-desktop`] === "loaded" && loaded[`${active}-mobile`] === "loaded") setShown(active);
   }, [active, loaded]);
 
   const renderCaptures = (mobile: boolean) => Array.from(new Set([...visited, active])).map((index) => (
     <PreviewImage key={templates.items[index].slug} slug={templates.items[index].slug} mobile={mobile} visible={shown === index}
       onLoad={() => setLoaded((previous) => {
         const key = `${index}-${mobile ? "mobile" : "desktop"}`;
-        return previous[key] ? previous : { ...previous, [key]: true };
+        return previous[key] === "loaded" ? previous : { ...previous, [key]: "loaded" };
+      })}
+      onError={() => setLoaded((previous) => {
+        const key = `${index}-${mobile ? "mobile" : "desktop"}`;
+        return previous[key] === "error" ? previous : { ...previous, [key]: "error" };
       })} />
   ));
 
   return (
-    <aside className={`hero-preview relative hidden min-w-0 lg:block ${paused ? "hero-preview-paused" : ""}`} aria-label={hero.preview.label}>
+    <aside className={`hero-preview relative hidden min-w-0 lg:block ${paused ? "hero-preview-paused" : ""}`} aria-label={hero.preview.label}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      onFocus={(event) => setFocused(event.target.matches(":focus-visible"))} onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+      }}>
       <div aria-hidden="true" className="pointer-events-none absolute inset-[15%] rounded-full bg-accent/15 blur-[90px]" />
       <div className="hero-preview-stage relative ml-auto">
         <div className="hero-preview-desktop overflow-hidden rounded-xl border border-white/20 bg-[#202124] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]">
@@ -93,7 +119,7 @@ export default function HeroPreview() {
                 key={item.slug}
                 type="button"
                 aria-pressed={active === index}
-                onClick={() => { setActive(index); setPaused(true); }}
+                onClick={() => { setActive(index); setSelection((value) => value + 1); }}
                 className={`relative flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-t-xl px-1.5 text-[clamp(0.6rem,0.8vw,0.75rem)] font-medium transition-colors focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${active === index ? "bg-[#35363a] text-white" : "text-white/60 hover:bg-white/5 hover:text-white"}`}
               >
                 <span aria-hidden="true" className={`hidden h-2 w-2 shrink-0 rounded-sm xl:block ${active === index ? "bg-accent" : "bg-white/30"}`} />
