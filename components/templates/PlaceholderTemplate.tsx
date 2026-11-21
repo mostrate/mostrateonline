@@ -25,7 +25,7 @@ export default function PlaceholderTemplate({ name, tag, desc, accent }: Props) 
         </span>
 
         <h1 className="mb-4 font-syne text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.03em]">
-          Template{" "}
+          Plantilla{" "}
           <span style={{ color: accent }}>{name}</span>
         </h1>
 
@@ -33,7 +33,7 @@ export default function PlaceholderTemplate({ name, tag, desc, accent }: Props) 
           {desc}
         </p>
         <p className="mb-10 max-w-[480px] text-[clamp(0.95rem,1.3vw,1.1rem)] text-muted">
-          Este template está en construcción. Acá va a vivir la página
+          Esta plantilla está en construcción. Acá va a vivir la página
           personalizada de cada cliente de este rubro.
         </p>
 

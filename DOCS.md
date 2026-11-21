@@ -14,8 +14,9 @@ presencia online (o tienen una desactualizada).
 ### Modelo de negocio
 - Se ofrecen **4 templates reutilizables** que se personalizan por cliente.
 - Cada cliente tiene **su propio dominio**.
-- **Pago único inicial** por diseño y desarrollo.
-- **Abono mensual** que cubre hosting, dominio y mantenimiento.
+- Cuatro planes: Landing, Landing Pro, Sistema base y Sistema personalizado.
+- Cada plan incluye un año de hosting y dominio y un período de soporte indicado
+  en `lib/config.ts`.
 
 Este repo contiene **dos cosas distintas**:
 1. **La landing de Mostrate** (`/`) → la web que *vende el servicio*.
@@ -314,7 +315,7 @@ Centraliza los precios, los datos de contacto y el contenido comercial de la
 landing. Aún hay textos auxiliares en componentes, como las etiquetas para abrir
 o cerrar el menú y el asunto/cuerpo del correo de contacto. Bloques principales:
 
-- `pricing` → **precios** (`inicial`, `mensual`). *Editá esto para cambiar los precios.*
+- `pricing` → **precios** (`landing`, `landingPro`, `sistemaBase`, `sistemaPersonalizado`). *Editá esto para cambiar los precios.*
 - `contact` → email, WhatsApp, ubicación.
 - `site`, `nav`, `hero`, `servicios`, `templates`, `precios`, `contacto`, `footer`.
 
@@ -926,6 +927,9 @@ constituyen una integración operativa mientras no se configure el número.
   el diseño y la revisión de interfaces, junto con la evaluación de recursos
   externos. Se aclaran su alcance, el contenido ficticio para demos y las
   precauciones al ejecutar el build de Next.js.
+- **2026-11-21** — Se actualizan los textos comerciales, el correo de contacto
+  y los cuatro planes. La sección de precios presenta las tarjetas debajo del
+  título y el formulario ya no solicita rubro.
 
 ---
 

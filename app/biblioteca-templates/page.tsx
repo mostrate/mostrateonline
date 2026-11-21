@@ -5,7 +5,7 @@ import Nav from "@/components/landing/Nav";
 import Templates from "@/components/landing/Templates";
 
 export const metadata: Metadata = {
-  title: "Biblioteca de templates | Mostrate",
+  title: "Biblioteca de plantillas | Mostrate",
   description: "Explorá los puntos de partida disponibles para tu página web.",
 };
 
