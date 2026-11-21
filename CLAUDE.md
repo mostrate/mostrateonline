@@ -16,8 +16,9 @@ breve al proyecto.
 - Las skills disponibles en `.claude/skills/` y los subagentes de `.claude/agents/`
   son procedimientos especializados y deben respetar DOCS.md, sin definir una
   arquitectura paralela. Codex usa los mismos archivos vía AGENTS.md.
-- Para diseñar, modificar o revisar sitios de clientes o sus templates, aplicar
-  la skill `diseno-ui`.
+- Para cambios visuales o de interacción en sitios de clientes o sus templates,
+  leer y aplicar
+  [`.claude/skills/diseno-ui/SKILL.md`](.claude/skills/diseno-ui/SKILL.md).
 - Actualizar la sección pertinente de DOCS.md cuando cambie una decisión
   persistente; una conversación no reemplaza su registro.
 - Ejecutar las verificaciones disponibles pertinentes antes de terminar y

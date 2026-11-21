@@ -5,7 +5,7 @@ description: Diseñar, ajustar o revisar interfaces de sitios de clientes y temp
 
 # Diseño y revisión de interfaces para clientes
 
-# Alcance
+## Alcance
 
 Usá este procedimiento para diseñar, implementar o evaluar templates y sitios
 de clientes. La landing comercial de Mostrate queda fuera, salvo que el usuario
@@ -27,9 +27,11 @@ los límites de [`nuevo-cliente`](../nuevo-cliente/SKILL.md).
 - En una página nueva o un rediseño amplio, definí una dirección breve que
   conecte audiencia, contenido y composición. Contrastá jerarquía, ritmo de
   secciones, tipografía, color y uso de imágenes reales; evitá fórmulas
-  repetidas cuando no aporten al objetivo. No inventes testimonios, cifras,
-  marcas ni funciones para completar un diseño. Señalá el contenido pendiente
-  y mantené separados los datos y activos privados de cada cliente.
+  repetidas cuando no aporten al objetivo. Para clientes reales, no inventes
+  testimonios, cifras, marcas ni funciones: señalá el contenido pendiente y
+  mantené separados sus datos y activos privados. En demos y templates se
+  permite contenido ficticio, siempre que quede claro que es de ejemplo y no
+  se confunda con información o testimonios reales.
 
 ## Implementación
 
@@ -55,8 +57,7 @@ los límites de [`nuevo-cliente`](../nuevo-cliente/SKILL.md).
   priorizá los problemas que impiden uso o comprensión y citá la vista y el
   tamaño revisados. No transformes una revisión en un rediseño no solicitado.
 - Ejecutá las comprobaciones pertinentes del proyecto y comunicá resultados y
-  límites. No ejecutes `next build` sobre el mismo directorio `.next` mientras
-  esté activo `next dev`; coordiná o aislá las verificaciones.
+  límites, siguiendo las indicaciones de `DOCS.md` (sección 2).
 
 Las fuentes y los motivos de selección se registran en
 [`docs/evaluacion-recursos-ui.md`](../../../docs/evaluacion-recursos-ui.md).
