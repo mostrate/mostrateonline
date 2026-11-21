@@ -9,6 +9,7 @@ export default function ComoTrabajamos() {
           label={comoTrabajamos.label}
           title={comoTrabajamos.title}
           subtitle={comoTrabajamos.subtitle}
+          subtitleClassName="max-w-none"
         />
         <ol className="mt-[clamp(40px,5vw,64px)] grid border-t border-line md:grid-cols-4">
           {comoTrabajamos.items.map((item, index) => (

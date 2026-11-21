@@ -130,7 +130,7 @@ export default function DemoToolbar(props: Props) {
       href="/#contacto"
       className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#4F7FFF] px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#6690FF]"
     >
-      Quiero este template
+      Quiero esta plantilla
       <span aria-hidden>→</span>
     </a>
   );

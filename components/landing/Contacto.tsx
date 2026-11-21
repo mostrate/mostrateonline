@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { contacto, contact } from "@/lib/config";
 import SectionHeader from "./SectionHeader";
-import { ChevronDownIcon } from "./Icons";
 import Button from "./Button";
 
 const inputClass =
@@ -19,7 +18,6 @@ export default function Contacto() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    rubro: "",
     message: "",
   });
 
@@ -30,7 +28,6 @@ export default function Contacto() {
     const body = [
       `Nombre: ${form.name}`,
       `Email: ${form.email}`,
-      `Rubro: ${form.rubro}`,
       "",
       form.message,
     ].join("\n");
@@ -79,10 +76,6 @@ export default function Contacto() {
                   )}
                 </dd>
               </div>
-              <div>
-                <dt className={infoLabelClass}>{contacto.infoLabels.location}</dt>
-                <dd>{contact.location}</dd>
-              </div>
             </dl>
           </div>
 
@@ -119,32 +112,6 @@ export default function Contacto() {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className={inputClass}
             />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label htmlFor="rubro" className={fieldLabelClass}>
-              {contacto.form.rubro.label}
-            </label>
-            <div className="relative">
-              <select
-                id="rubro"
-                value={form.rubro}
-                onChange={(e) => setForm({ ...form, rubro: e.target.value })}
-                className={`${inputClass} cursor-pointer appearance-none pr-8 ${
-                  form.rubro ? "" : "text-muted/60"
-                }`}
-              >
-                <option value="" className="bg-surface">
-                  {contacto.form.rubro.placeholder}
-                </option>
-                {contacto.form.rubro.options.map((opt) => (
-                  <option key={opt} value={opt} className="bg-surface text-content">
-                    {opt}
-                  </option>
-                ))}
-              </select>
-              <ChevronDownIcon className="pointer-events-none absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 text-content" />
-            </div>
           </div>
 
           <div className="flex flex-col gap-1">

@@ -20,11 +20,11 @@ export default function Servicios() {
             return (
               <li
                 key={item.title}
-                className="group relative grid grid-cols-[auto_1fr] gap-x-[clamp(20px,3vw,40px)] border-b border-line py-[clamp(28px,3.5vw,44px)]"
+                className="group relative grid grid-cols-[max-content_minmax(0,1fr)] items-start gap-x-[clamp(16px,2.5vw,32px)] border-b border-line py-[clamp(28px,3.5vw,44px)]"
               >
                 {/* Barrido de acento al pasar el mouse */}
                 <span className="pointer-events-none absolute inset-y-0 left-0 w-px origin-top scale-y-0 bg-accent transition-transform duration-500 group-hover:scale-y-100" />
-                <span className="font-syne text-[clamp(3rem,6vw,5.5rem)] font-extrabold leading-[0.8] tracking-[-0.05em] text-transparent transition-colors duration-500 [-webkit-text-stroke:1px_rgba(240,238,233,0.3)] group-hover:text-accent group-hover:[-webkit-text-stroke:1px_transparent]">
+                <span className="w-[2em] whitespace-nowrap font-syne text-[clamp(2.5rem,4vw,4rem)] font-extrabold leading-none tracking-[-0.05em] text-transparent transition-colors duration-500 [-webkit-text-stroke:1px_rgba(240,238,233,0.3)] group-hover:text-accent group-hover:[-webkit-text-stroke:1px_transparent]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>

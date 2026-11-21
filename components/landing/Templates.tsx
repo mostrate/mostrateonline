@@ -33,7 +33,7 @@ export default function Templates() {
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image
                       src={`/previews/${tpl.slug}.webp`}
-                      alt={`Vista del template ${tpl.name}`}
+                      alt={`Vista de la plantilla ${tpl.name}`}
                       fill
                       sizes="(min-width: 768px) 45vw, 92vw"
                       className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"

@@ -49,7 +49,7 @@ en [`lib/config.ts`](lib/config.ts). Algunos textos auxiliares siguen en los
 componentes. Las demos usan `lib/templates/<slug>.ts`; ver
 [`DOCS.md`](DOCS.md) para su estructura y convenciones.
 
-- **Precios:** objeto `pricing` (`inicial` / `mensual`).
+- **Precios:** objeto `pricing` (`landing`, `landingPro`, `sistemaBase`, `sistemaPersonalizado`).
 - **Contacto:** objeto `contact` (email, WhatsApp, ubicación).
 - **Secciones:** `hero`, `servicios`, `como-trabajamos`, `precios`, `faq`, `contacto`, `footer`. La galería está en `/biblioteca-templates` y se abre en otra pestaña desde la navegación y el hero.
 
