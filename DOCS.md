@@ -55,6 +55,25 @@ No ejecutar `next build` y `next dev` al mismo tiempo sobre el mismo directorio
 `.next`: detener el servidor de desarrollo o usar un entorno aislado para el
 build, para evitar que ambos procesos sobrescriban sus archivos generados.
 
+### Base para buscadores
+
+El dominio público se centraliza en `site.url` (`lib/config.ts`). Next genera
+`/robots.txt` y `/sitemap.xml` desde `app/robots.ts` y `app/sitemap.ts`.
+El sitemap incluye la portada, la biblioteca y las demos; estas se identifican
+como modelos de Mostrate en sus metadatos. Las variantes `?diseno=` comparten
+la URL canónica de su demo. Mantener los entornos de prueba fuera del índice
+mediante protección o `noindex` del hosting y verificarlo antes de publicar.
+Se permite el rastreo de búsqueda de Google, ChatGPT y Claude; `GPTBot` y
+`ClaudeBot` quedan bloqueados para entrenamiento. `Google-Extended` queda
+permitido para uso en Gemini, incluido entrenamiento y fundamentación de
+respuestas. Estas directivas expresan preferencias a rastreadores compatibles.
+Confirmar títulos, descripciones y contenido comercial antes de publicarlos.
+La portada publica datos estructurados `Organization` solo con nombre y dominio
+confirmados. `deploy/verify.sh` comprueba sitemap, robots y canonical de las rutas
+actuales; la indexación real requiere revisión posterior en Search Console.
+La imagen para compartir se genera en `app/opengraph-image.tsx`; actualizarla si
+cambian el dominio o el mensaje principal del hero.
+
 Convención: los tests viven junto al archivo que prueban, como
 `<archivo>.test.ts(x)` (ej. `components/templates/theme.test.ts`,
 `components/templates/gastronomia/Menu.test.tsx`).
@@ -600,6 +619,7 @@ generadores ejecutables. Deben respetar las convenciones de este documento.
 | `nuevo-template` | Scaffold completo de un template nuevo siguiendo el patrón de Profesional. |
 | `nuevo-cliente` | Generar la instancia de un cliente a partir de un template existente. |
 | `diseno-ui` | Diseñar y revisar sitios de clientes y templates según su identidad, accesibilidad y verificación visual. |
+| `seo-ai-seo` | Revisar y ajustar señales de búsqueda al cambiar contenido público o rutas de Mostrate. |
 
 La evaluación de los recursos externos y los motivos de adopción están en
 [`docs/evaluacion-recursos-ui.md`](docs/evaluacion-recursos-ui.md). El alcance
@@ -930,6 +950,15 @@ constituyen una integración operativa mientras no se configure el número.
 - **2026-11-21** — Se actualizan los textos comerciales, el correo de contacto
   y los cuatro planes. La sección de precios presenta las tarjetas debajo del
   título y el formulario ya no solicita rubro.
+- **2026-11-21** — Se prepara la base técnica para buscadores: dominio
+  canónico, metadatos de páginas y demos, `robots.txt` y sitemap. Las demos se
+  describen como modelos, sin presentarlas como negocios reales en los metadatos.
+- **2026-11-21** — Se añade identificación estructurada de Mostrate, controles
+  SEO al workflow de deploy y una skill compartida para revisar cambios futuros.
+- **2026-11-21** — Se permite búsqueda en ChatGPT y Claude y se bloquean sus
+  rastreadores de entrenamiento; se mantiene habilitado Google-Extended para Gemini.
+- **2026-11-21** — Se ajustan los metadatos a la oferta y los textos actualizados
+  y se incorpora una imagen de Mostrate para compartir el sitio.
 
 ---
 

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { demoMetadata } from "@/lib/seo";
 import ThemeProvider from "@/components/templates/ThemeProvider";
 import { resolveDesign } from "@/components/templates/design";
 import {
-  bienestar,
   bienestarDesigns,
   bienestarFonts,
   bienestarPrimaries,
@@ -12,10 +12,7 @@ import DisenoNucleo from "@/components/templates/bienestar/DisenoNucleo";
 import DisenoCalma from "@/components/templates/bienestar/DisenoCalma";
 import DisenoDeportivo from "@/components/templates/bienestar/DisenoDeportivo";
 
-export const metadata: Metadata = {
-  title: `${bienestar.business.name} — ${bienestar.footer.tagline}`,
-  description: bienestar.hero.subtitle,
-};
+export const metadata: Metadata = demoMetadata("bienestar", "bienestar");
 
 // Cada diseño lee el mismo contenido (lib/templates/bienestar.ts).
 const designComponents = {

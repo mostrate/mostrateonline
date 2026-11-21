@@ -35,6 +35,32 @@ done
 
 for r in "${routes[@]}"; do expect 200 "$r" "${auth[@]}" "$base$r"; done
 expect 404 "/no-existe" "${auth[@]}" "$base/no-existe"
+expect 200 "/robots.txt" "${auth[@]}" "$base/robots.txt"
+expect 200 "/sitemap.xml" "${auth[@]}" "$base/sitemap.xml"
+
+robots=$(curl -fsS "${auth[@]}" "$base/robots.txt" || true)
+sitemap=$(curl -fsS "${auth[@]}" "$base/sitemap.xml" || true)
+if printf '%s' "$robots" | grep -Fq 'Sitemap: https://mostrateonline.com.ar/sitemap.xml'; then
+  echo "ok   robots anuncia el sitemap de producción"
+else
+  echo "FAIL robots no anuncia el sitemap de producción"; fail=1
+fi
+for r in "${routes[@]}"; do
+  if printf '%s' "$sitemap" | grep -Fq "<loc>https://mostrateonline.com.ar$r</loc>"; then
+    echo "ok   sitemap contiene $r"
+  else
+    echo "FAIL sitemap no contiene $r"; fail=1
+  fi
+done
+for r in "${routes[@]}"; do
+  page=$(curl -fsS "${auth[@]}" "$base$r" || true)
+  canonical="https://mostrateonline.com.ar${r%/}"
+  if grep -Fq "rel=\"canonical\" href=\"$canonical\"" <<< "$page"; then
+    echo "ok   canonical $r"
+  else
+    echo "FAIL falta canonical para $r"; fail=1
+  fi
+done
 
 # Una imagen de next/image de la biblioteca (la portada las carga en el cliente): tiene
 # que llegar como imagen. En producción pasa por /_next/image; en staging va directo.

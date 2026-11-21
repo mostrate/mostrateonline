@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { demoMetadata } from "@/lib/seo";
 import ThemeProvider from "@/components/templates/ThemeProvider";
 import { resolveDesign } from "@/components/templates/design";
 import {
-  profesional,
   profesionalDesigns,
   profesionalFonts,
   profesionalPrimaries,
@@ -12,10 +12,7 @@ import DisenoClasico from "@/components/templates/profesional/DisenoClasico";
 import DisenoTecnico from "@/components/templates/profesional/DisenoTecnico";
 import DisenoBoutique from "@/components/templates/profesional/DisenoBoutique";
 
-export const metadata: Metadata = {
-  title: `${profesional.business.name} — ${profesional.footer.tagline}`,
-  description: profesional.hero.subtitle,
-};
+export const metadata: Metadata = demoMetadata("profesionales", "profesional");
 
 // Cada diseño lee el mismo contenido (lib/templates/profesional.ts).
 const designComponents = {

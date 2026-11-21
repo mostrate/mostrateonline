@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { demoMetadata } from "@/lib/seo";
 import ThemeProvider from "@/components/templates/ThemeProvider";
 import { resolveDesign } from "@/components/templates/design";
 import {
-  gastronomia,
   gastronomiaDesigns,
   gastronomiaFonts,
   gastronomiaPrimaries,
@@ -12,10 +12,7 @@ import DisenoCarta from "@/components/templates/gastronomia/DisenoCarta";
 import DisenoBodegon from "@/components/templates/gastronomia/DisenoBodegon";
 import DisenoTaberna from "@/components/templates/gastronomia/DisenoTaberna";
 
-export const metadata: Metadata = {
-  title: `${gastronomia.business.name} — ${gastronomia.footer.tagline}`,
-  description: gastronomia.hero.subtitle,
-};
+export const metadata: Metadata = demoMetadata("gastronomía", "gastronomia");
 
 // Cada diseño lee el mismo contenido (lib/templates/gastronomia.ts).
 const designComponents = {

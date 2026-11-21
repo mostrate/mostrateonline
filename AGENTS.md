@@ -13,6 +13,8 @@ breve al proyecto.
 - Para cambios visuales o de interacción en sitios de clientes o sus templates,
   leer y aplicar
   [`.claude/skills/diseno-ui/SKILL.md`](.claude/skills/diseno-ui/SKILL.md).
+- Al cambiar contenido público, rutas, metadatos o acceso de rastreadores de
+  Mostrate, aplicar [`.claude/skills/seo-ai-seo/SKILL.md`](.claude/skills/seo-ai-seo/SKILL.md).
 - Actualizar ramas con `git rebase origin/main` (nunca mergear `main` en la
   rama) y publicar con `git push --force-with-lease`; los PR se integran con
   "Rebase and merge". Ver DOCS.md, sección 14.

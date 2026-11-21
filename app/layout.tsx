@@ -174,10 +174,11 @@ const barlow = localFont({
 });
 
 export const metadata: Metadata = {
-  title: `${site.name} — Presencia digital para tu negocio`,
+  metadataBase: new URL(site.url),
+  title: "Diseño y desarrollo de páginas web para negocios | Mostrate",
   description: site.description,
   openGraph: {
-    title: `${site.name} — Presencia digital para tu negocio`,
+    title: "Diseño y desarrollo de páginas web para negocios | Mostrate",
     description: site.description,
     locale: "es_AR",
     type: "website",
