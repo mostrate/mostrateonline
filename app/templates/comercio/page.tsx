@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { demoMetadata } from "@/lib/seo";
 import ThemeProvider from "@/components/templates/ThemeProvider";
 import { resolveDesign } from "@/components/templates/design";
 import {
-  comercio,
   comercioDesigns,
   comercioFonts,
   comercioPrimaries,
@@ -12,10 +12,7 @@ import DisenoEditorial from "@/components/templates/comercio/DisenoEditorial";
 import DisenoPop from "@/components/templates/comercio/DisenoPop";
 import DisenoGaleria from "@/components/templates/comercio/DisenoGaleria";
 
-export const metadata: Metadata = {
-  title: `${comercio.business.name} — ${comercio.footer.tagline}`,
-  description: comercio.hero.subtitle,
-};
+export const metadata: Metadata = demoMetadata("comercios", "comercio");
 
 // Cada diseño lee el mismo contenido (lib/templates/comercio.ts).
 const designComponents = {

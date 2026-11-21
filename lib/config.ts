@@ -29,10 +29,11 @@ export const contact = {
 /* ─────────────────────────────  SITIO / MARCA  ─────────────────────── */
 export const site = {
   name: "Mostrate",
+  url: "https://mostrateonline.com.ar",
   // El logo se pinta como: [first][accent] → "mos" + "trate" (acento en color)
   logo: { first: "mos", accent: "trate" },
   description:
-    "Landing pages profesionales para emprendedores, pequeños negocios y monotributistas en Argentina.",
+    "Creamos, renovamos y mejoramos páginas web y sistemas para negocios y pymes de Argentina, con diseño personalizado y acompañamiento.",
 };
 
 /* ─────────────────────────────  NAV  ───────────────────────────────── */

@@ -19,6 +19,8 @@ breve al proyecto.
 - Para cambios visuales o de interacción en sitios de clientes o sus templates,
   leer y aplicar
   [`.claude/skills/diseno-ui/SKILL.md`](.claude/skills/diseno-ui/SKILL.md).
+- Al cambiar contenido público, rutas, metadatos o acceso de rastreadores de
+  Mostrate, aplicar [`.claude/skills/seo-ai-seo/SKILL.md`](.claude/skills/seo-ai-seo/SKILL.md).
 - Actualizar la sección pertinente de DOCS.md cuando cambie una decisión
   persistente; una conversación no reemplaza su registro.
 - Ejecutar las verificaciones disponibles pertinentes antes de terminar y
