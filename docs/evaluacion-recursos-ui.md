@@ -20,6 +20,5 @@ no se copiaron archivos de terceros ni se instalaron dependencias.
 | [Cursify](https://github.com/ui-layouts/cursify) | Repositorio de efectos de cursor; no se encontró archivo de licencia en el árbol consultado. No copiar código hasta aclarar sus términos. Los efectos de cursor deben ser prescindibles en táctil y con movimiento reducido. |
 
 No se agregaron MCP, claves, dependencias ni un agente por repositorio. La
-capacidad compartida vive en `.claude/skills/diseno-ui/` y se usa también desde
-Codex mediante `AGENTS.md`, sin duplicar sus instrucciones.
-Se aplica a la landing comercial de Mostrate solo si el usuario lo pide.
+capacidad compartida vive en [la skill `diseno-ui`](../.claude/skills/diseno-ui/SKILL.md)
+y se usa también desde Codex mediante `AGENTS.md`, sin duplicar instrucciones.

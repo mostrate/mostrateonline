@@ -47,6 +47,10 @@ npm run test:watch  # tests en modo watch
 npm run coverage    # tests + reporte de cobertura (v8)
 ```
 
+No ejecutar `next build` y `next dev` al mismo tiempo sobre el mismo directorio
+`.next`: detener el servidor de desarrollo o usar un entorno aislado para el
+build, para evitar que ambos procesos sobrescriban sus archivos generados.
+
 Convención: los tests viven junto al archivo que prueban, como
 `<archivo>.test.ts(x)` (ej. `components/templates/theme.test.ts`,
 `components/templates/gastronomia/Menu.test.tsx`).
@@ -165,6 +169,7 @@ lib/
     gastronomia.ts               → temas + fuentes + diseños + contenido de Gastronomía (demo)
     bienestar.ts                 → temas + fuentes + diseños + contenido de Bienestar (demo)
 
+docs/evaluacion-recursos-ui.md  → evaluación de recursos para diseño de interfaces
 docs/guias/                      → fuentes (HTML + imágenes) de las guías en PDF para clientes
 public/guias/                    → PDFs generados, servidos en /guias/<nombre>.pdf
 ```
@@ -593,10 +598,9 @@ generadores ejecutables. Deben respetar las convenciones de este documento.
 | `diseno-ui` | Diseñar y revisar sitios de clientes y templates según su identidad, accesibilidad y verificación visual. |
 
 La evaluación de los recursos externos y los motivos de adopción están en
-[`docs/evaluacion-recursos-ui.md`](docs/evaluacion-recursos-ui.md). La skill
-es compartida entre Claude Code y Codex; se aplica a sitios de clientes y sus
-templates, y a la landing comercial solo a pedido explícito. No incorpora
-catálogos ni servicios.
+[`docs/evaluacion-recursos-ui.md`](docs/evaluacion-recursos-ui.md). El alcance
+y el procedimiento compartido se definen en
+[`diseno-ui`](.claude/skills/diseno-ui/SKILL.md).
 
 ### Subagentes
 
@@ -759,6 +763,10 @@ constituyen una integración operativa mientras no se configure el número.
 - **2026-11-07** — La portada usa cuatro previews sincronizados y enlaza a la
   biblioteca independiente. Se ajustan la duración y pausa del simulador, los
   enlaces de regreso, la carga de imágenes y la cabecera de la biblioteca.
+- **2026-11-21** — Se incorpora la skill compartida `diseno-ui` para orientar
+  el diseño y la revisión de interfaces, junto con la evaluación de recursos
+  externos. Se aclaran su alcance, el contenido ficticio para demos y las
+  precauciones al ejecutar el build de Next.js.
 
 ---
 
