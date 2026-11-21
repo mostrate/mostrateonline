@@ -636,13 +636,29 @@ con un merge.
 3. *destino*: `staging` o `produccion`.
 4. *rama*: la rama a publicar. Producción solo acepta `main`.
 
-La Action corre lint, tests y build. Si pasan, publica y verifica:
+La Action hace, en orden:
 
-- En producción, que las 6 rutas respondan 200.
-- En staging, que sin contraseña responda 401.
+1. Lint, tests y build de la rama.
+2. Levanta el build con `next start` y lo verifica con
+   [`deploy/verify.sh`](deploy/verify.sh).
+3. Lo sube a Vercel **sin pasarlo al dominio** (`--prod --skip-domain`) y vuelve
+   a verificar, ahora sobre la URL de ese deploy.
+4. Si todo da bien, lo pasa al dominio (`vercel promote`) y verifica el dominio.
 
-El resumen del run muestra la URL y el commit publicado. La puede correr
-cualquiera con permiso de escritura en el repo.
+Si algo falla antes del paso 4, el dominio sigue sirviendo el deploy anterior.
+
+Qué verifica `verify.sh`:
+
+- Las 6 rutas responden 200, una inexistente da 404, y una imagen de
+  `/biblioteca-templates` llega como imagen.
+- En staging, además: 401 sin contraseña, 401 con contraseña incorrecta, 401 en
+  la imagen sin contraseña, y que esté el header `noindex`.
+
+Se puede correr a mano contra un `next start` local:
+`STAGING_PASSWORD=… bash deploy/verify.sh http://localhost:3000 staging`.
+
+El resumen del run muestra el dominio, la URL del deploy y el commit publicado.
+La Action la puede correr cualquiera con permiso de escritura en el repo.
 
 **Volver atrás:** en vercel.com → proyecto (`mostrateonline` o
 `mostrateonline-staging`) → Deployments, elegir el deploy anterior → **Instant
@@ -650,32 +666,46 @@ Rollback**. No hace falta rebuild.
 
 ### Contraseña de staging
 
-El código del sitio no tiene contraseña. Al publicar en staging, la Action
-copia [`deploy/staging-middleware.ts`](deploy/staging-middleware.ts) como
-`middleware.ts`, así:
+El código del sitio no tiene contraseña. Al publicar en staging, la Action le
+agrega dos archivos de `deploy/`:
 
-- cualquier rama sale protegida, aunque sea vieja;
-- producción no carga ningún middleware.
+- [`staging-middleware.ts`](deploy/staging-middleware.ts), copiado como
+  `middleware.ts`: pide usuario y contraseña (Basic Auth) y manda
+  `X-Robots-Tag: noindex`. Si la contraseña no llega, responde 503 y no sirve
+  nada.
+- [`staging-next-config.mjs`](deploy/staging-next-config.mjs), copiado como
+  `next.config.mjs`: envuelve el de la rama (renombrado a `next.config.base.mjs`)
+  y desactiva la optimización de imágenes. Hace falta porque `/_next/image` pide
+  la imagen original por dentro sin las credenciales, el middleware la rechaza y
+  la respuesta es un 400. Sin optimizar, el navegador pide cada imagen directo,
+  con la contraseña, y siguen protegidas.
 
-Además, staging manda `X-Robots-Tag: noindex` para que no lo indexe Google.
+Así cualquier rama sale protegida, aunque sea vieja, y producción no carga
+middleware y sigue optimizando imágenes.
 
-Las credenciales son env vars del proyecto `mostrateonline-staging` (Settings →
-Environment Variables, entorno **Production**):
+Las credenciales viven en GitHub (Settings → Secrets and variables → Actions) y
+la Action se las pasa al deploy:
 
-| Variable | Qué es |
-|---|---|
-| `STAGING_PASSWORD` | La contraseña. Sin ella, la Action **no publica** en staging (quedaría abierto) |
-| `STAGING_USER` | Opcional. Vacío = acepta cualquier usuario con la contraseña correcta |
+| Dónde | Nombre | Qué es |
+|---|---|---|
+| Secret | `STAGING_PASSWORD` | La contraseña. Sin ella, la Action **no publica** en staging |
+| Variable | `STAGING_USER` | Opcional. Vacía = acepta cualquier usuario con la contraseña correcta |
 
-Para cambiar la contraseña: editar la variable en Vercel y volver a correr la
-Action con destino `staging`. El cambio no aplica hasta el próximo deploy.
+Viven en GitHub y no en Vercel porque la Action necesita la contraseña para
+probar el acceso, y Vercel no deja leer las variables "sensitive". Para
+cargarla o cambiarla:
+`gh secret set STAGING_PASSWORD -R mostrate/mostrateonline`, y volver a correr
+la Action con destino `staging`. El cambio no aplica hasta el próximo deploy.
 
 Vercel tiene su propia protección con contraseña, pero es un add-on pago de Pro.
 Por eso se usa Basic Auth, el mismo esquema que el staging de los sitios de
 clientes.
 
-Si una rama trae su propio `middleware.ts`, la Action frena. Antes de publicar
-en staging hay que combinarlo con el de `deploy/`.
+La Action frena en dos casos:
+
+- Si una rama trae su propio `middleware.ts`: hay que combinarlo con el de
+  `deploy/` antes de publicar en staging.
+- Si la rama usa un `next.config` que no es `.mjs`.
 
 ### Configuración
 
@@ -684,10 +714,14 @@ en staging hay que combinarlo con el de `deploy/`.
 | Proyecto de Vercel | `mostrateonline` | `mostrateonline-staging` |
 | ID | `prj_LAAWVEfOZXPhgBqReajKXMOge6kZ` | `prj_ZzzosmEoWzFvPhd4RoiX8qfALFjN` |
 | Dominio | `mostrateonline.com.ar` | `staging.mostrateonline.com.ar` |
-| Env vars | Ninguna | `STAGING_PASSWORD`, `STAGING_USER` |
+| Env vars en Vercel | Ninguna | Ninguna (la contraseña llega desde GitHub en cada deploy) |
+| Vercel Authentication | Desactivada | Desactivada |
 
-- **Cuenta de Vercel:** Hobby de `internal@mostrateonline.com.ar`, scope
-  `mostrate`.
+- **Cuenta de Vercel:** Hobby personal de `internal@mostrateonline.com.ar`, scope
+  `mostrate`. No es un equipo: la API no lleva `teamId`.
+- **Vercel Authentication desactivada:** si estuviera activa, la Action no
+  podría verificar la URL del deploy (`*.vercel.app`) antes de pasarlo al
+  dominio. En staging esas URLs igual piden la contraseña del middleware.
 - **Proyectos no conectados a GitHub:** en Hobby, Vercel bloquea los deploys
   cuyo último commit es de alguien que no pertenece a la cuenta (los socios
   commitean con su mail). Por eso la Action sube una copia **sin `.git`** con la
@@ -695,8 +729,8 @@ en staging hay que combinarlo con el de `deploy/`.
 - **GitHub, secret** `VERCEL_TOKEN`: token de la cuenta de Vercel (hoy el mismo
   que usa mostrate-kit). Se rota creando uno nuevo en Vercel y cargándolo con
   `gh secret set VERCEL_TOKEN -R mostrate/mostrateonline`.
-- **GitHub, variables:** `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_PRODUCCION` y
-  `VERCEL_PROJECT_ID_STAGING`.
+- **GitHub, variables:** `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_PRODUCCION`,
+  `VERCEL_PROJECT_ID_STAGING` y, si se usa, `STAGING_USER`.
 - **Redirecciones:**
   - `www.mostrateonline.com.ar` → 308 al dominio principal (lo hace Vercel).
   - `mostrateonline.com` y su `www` → 301 a `mostrateonline.com.ar` (lo hace

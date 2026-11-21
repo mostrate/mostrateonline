@@ -33,11 +33,14 @@ jobs:
   deploy:
     name: ${{ inputs.destino }} ← ${{ inputs.rama }}
     runs-on: ubuntu-latest
+    env:
+      DESTINO: ${{ inputs.destino }}
+      RAMA: ${{ inputs.rama }}
+      STAGING_PASSWORD: ${{ inputs.destino == 'staging' && secrets.STAGING_PASSWORD || '' }}
+      STAGING_USER: ${{ inputs.destino == 'staging' && vars.STAGING_USER || '' }}
     steps:
       - name: Validar pedido
         env:
-          DESTINO: ${{ inputs.destino }}
-          RAMA: ${{ inputs.rama }}
           WORKFLOW_REF: ${{ github.ref_name }}
         run: |
           if [ "$WORKFLOW_REF" != "main" ]; then
@@ -46,6 +49,10 @@ jobs:
           fi
           if [ "$DESTINO" = "produccion" ] && [ "$RAMA" != "main" ]; then
             echo "::error::Producción solo publica main. Para probar otra rama, usá destino staging."
+            exit 1
+          fi
+          if [ "$DESTINO" = "staging" ] && [ -z "$STAGING_PASSWORD" ]; then
+            echo "::error::Falta el secret STAGING_PASSWORD del repo: sin él, staging quedaría sin contraseña."
             exit 1
           fi
 
@@ -60,26 +67,24 @@ jobs:
           ref: ${{ inputs.rama }}
           path: site
 
-      - name: Staging - verificar contraseña y agregar el middleware
+      - name: Staging - agregar contraseña e imágenes sin optimizar
         if: inputs.destino == 'staging'
         working-directory: site
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID_STAGING }}
         run: |
-          # Sin STAGING_PASSWORD en Vercel, staging quedaría abierto: no se publica.
-          has=$(curl -fsS -H "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v9/projects/$PROJECT_ID/env" |
-            jq '[.envs[] | select(.key == "STAGING_PASSWORD" and (.target | index("production")))] | length')
-          if [ "$has" = "0" ]; then
-            echo "::error::Falta STAGING_PASSWORD (entorno Production) en el proyecto mostrateonline-staging de Vercel."
-            exit 1
-          fi
-          if [ -e middleware.ts ] || [ -e src/middleware.ts ]; then
-            echo "::error::La rama ya tiene un middleware.ts propio: combinarlo con deploy/staging-middleware.ts antes de publicar en staging."
+          if ls middleware.* src/middleware.* >/dev/null 2>&1; then
+            echo "::error::La rama ya tiene un middleware propio: combinarlo con deploy/staging-middleware.ts antes de publicar en staging."
             exit 1
           fi
           cp ../ci/deploy/staging-middleware.ts middleware.ts
+          if [ -f next.config.mjs ]; then
+            mv next.config.mjs next.config.base.mjs
+          elif ls next.config.* >/dev/null 2>&1; then
+            echo "::error::La rama usa un next.config que no es .mjs: adaptar deploy/staging-next-config.mjs."
+            exit 1
+          else
+            echo "export default {};" > next.config.base.mjs
+          fi
+          cp ../ci/deploy/staging-next-config.mjs next.config.mjs
 
       - uses: actions/setup-node@v4
         with:
@@ -95,7 +100,13 @@ jobs:
           npm test
           npm run build
 
-      - name: Publicar en Vercel
+      - name: Verificar el build local
+        working-directory: site
+        run: |
+          npx next start -p 3000 > "$RUNNER_TEMP/next.log" 2>&1 &
+          bash ../ci/deploy/verify.sh http://localhost:3000 "$DESTINO"
+
+      - name: Subir a Vercel (sin tocar el dominio todavía)
         id: deploy
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -107,33 +118,44 @@ jobs:
           mkdir "$RUNNER_TEMP/upload"
           rsync -a --exclude .git --exclude node_modules --exclude .next site/ "$RUNNER_TEMP/upload/"
           cd "$RUNNER_TEMP/upload"
-          npx --yes "$VERCEL_CLI" deploy --prod --yes --token "$VERCEL_TOKEN" > "$RUNNER_TEMP/deploy.out"
-          cat "$RUNNER_TEMP/deploy.out"
+          args=(deploy --prod --skip-domain --yes --token "$VERCEL_TOKEN")
+          if [ "$DESTINO" = "staging" ]; then
+            args+=(--build-env "STAGING_PASSWORD=$STAGING_PASSWORD" --env "STAGING_PASSWORD=$STAGING_PASSWORD")
+            [ -n "$STAGING_USER" ] && args+=(--build-env "STAGING_USER=$STAGING_USER" --env "STAGING_USER=$STAGING_USER")
+          fi
+          npx --yes "$VERCEL_CLI" "${args[@]}" > "$RUNNER_TEMP/deploy.out"
+          # La CLI imprime la URL, o un JSON si cree que la corre un agente.
+          if jq -e . "$RUNNER_TEMP/deploy.out" >/dev/null 2>&1; then
+            url=$(jq -r '.deployment.url // .url' "$RUNNER_TEMP/deploy.out")
+          else
+            url=$(tail -n 1 "$RUNNER_TEMP/deploy.out")
+          fi
+          case "$url" in https://*) ;; *) url="https://$url" ;; esac
+          echo "Deploy nuevo: $url"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
 
-      - name: Verificar
+      - name: Verificar el deploy nuevo (antes de pasarlo al dominio)
         env:
-          DESTINO: ${{ inputs.destino }}
-          RAMA: ${{ inputs.rama }}
+          URL: ${{ steps.deploy.outputs.url }}
+        run: bash ci/deploy/verify.sh "$URL" "$DESTINO"
+
+      - name: Pasar el deploy al dominio
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ inputs.destino == 'produccion' && vars.VERCEL_PROJECT_ID_PRODUCCION || vars.VERCEL_PROJECT_ID_STAGING }}
+        run: npx --yes "$VERCEL_CLI" promote "$URL" --yes --token "$VERCEL_TOKEN"
+
+      - name: Verificar el dominio
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
         run: |
-          if [ "$DESTINO" = "produccion" ]; then url=https://mostrateonline.com.ar; expected=200
-          else url=https://staging.mostrateonline.com.ar; expected=401; fi
-          for i in $(seq 1 12); do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "$url/" || true)
-            [ "$code" = "$expected" ] && break
-            sleep 5
-          done
-          if [ "$code" != "$expected" ]; then
-            echo "::error::$url respondió $code (esperaba $expected)."
-            exit 1
-          fi
-          if [ "$DESTINO" = "produccion" ]; then
-            for p in /biblioteca-templates /templates/profesional /templates/comercio /templates/gastronomia /templates/bienestar; do
-              c=$(curl -s -o /dev/null -w "%{http_code}" "$url$p")
-              [ "$c" = "200" ] || { echo "::error::$url$p respondió $c"; exit 1; }
-            done
-          fi
+          if [ "$DESTINO" = "produccion" ]; then domain=https://mostrateonline.com.ar; else domain=https://staging.mostrateonline.com.ar; fi
+          bash ci/deploy/verify.sh "$domain" "$DESTINO"
           {
             echo "### Publicado en $DESTINO"
-            echo "- URL: $url"
+            echo "- Dominio: $domain"
+            echo "- Deploy: $URL"
             echo "- Rama: \`$RAMA\` ($(git -C site rev-parse --short HEAD))"
           } >> "$GITHUB_STEP_SUMMARY"

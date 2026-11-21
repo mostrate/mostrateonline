@@ -4,12 +4,18 @@ import { NextResponse, type NextRequest } from "next/server";
  * Usuario y contraseña para staging (staging.mostrateonline.com.ar).
  * No es parte del sitio: el workflow de deploy lo copia como `middleware.ts` solo al
  * publicar en staging, así cualquier rama sale protegida y producción no lo carga.
- * STAGING_PASSWORD y STAGING_USER (opcional: vacío = acepta cualquier usuario) son env
- * vars del proyecto de Vercel `mostrateonline-staging`. Ver DOCS.md, sección 11.
+ * STAGING_PASSWORD y STAGING_USER (opcional: vacío = acepta cualquier usuario) los
+ * inyecta el workflow desde GitHub. Sin contraseña no se sirve nada: staging nunca
+ * queda abierto. Ver DOCS.md, sección 11.
  */
 export function middleware(request: NextRequest) {
   const password = process.env.STAGING_PASSWORD;
-  if (!password) return NextResponse.next();
+  if (!password) {
+    return new NextResponse("Staging sin contraseña configurada.", {
+      status: 503,
+      headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex, nofollow" },
+    });
+  }
 
   const header = request.headers.get("authorization");
   if (header?.startsWith("Basic ")) {
