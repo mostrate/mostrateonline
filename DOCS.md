@@ -35,7 +35,10 @@ Este repo contiene **dos cosas distintas**:
 | Testing | **Vitest** + **React Testing Library** (jsdom), alias `@/*` vía `vite-tsconfig-paths` |
 | Deploy | **Vercel** vía la Action *Deploy*: producción en `mostrateonline.com.ar`, staging con contraseña en `staging.mostrateonline.com.ar` (sección 11) |
 
-Requisito de la versión instalada de Next.js: Node ^18.18.0, ^19.8.0 o >=20. Comandos:
+Node **24** (archivo [`.nvmrc`](.nvmrc), que también usa la Action *Deploy*).
+Next.js acepta Node 20, pero los tests no: jsdom 30 y undici 8 piden Node
+^22.22 o ^24.15, y con Node 20 vitest falla al arrancar
+(`Cannot read properties of undefined (reading 'bind')`). Comandos:
 
 ```bash
 npm install     # instalar dependencias
